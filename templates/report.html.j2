@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>글로벌 마켓 대시보드 | {{ data.date }}</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --up: #3fb950;
+    --down: #f85149;
+    --neutral: #8b949e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Noto Sans KR", sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 32px; }
+  h1 { margin: 0 0 4px; font-size: 28px; color: #fff; }
+  .subtitle { color: var(--muted); font-size: 14px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .toc a {
+    color: var(--accent); text-decoration: none; font-size: 13px;
+    padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px;
+  }
+  .toc a:hover { background: var(--panel); }
+  .market-status-bar {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
+  }
+  .status-chip {
+    font-size: 12px; padding: 4px 10px; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--panel);
+  }
+  .status-open { color: var(--up); border-color: rgba(63,185,80,0.4); }
+  .status-closed { color: var(--muted); }
+  .data-disclaimer {
+    margin-top: 10px; padding: 8px 12px;
+    background: rgba(248,81,73,0.08); border-left: 2px solid var(--down);
+    color: var(--muted); font-size: 12px; line-height: 1.5;
+  }
+  .token-usage {
+    margin-top: 8px; padding: 8px 12px;
+    background: rgba(88,166,255,0.06); border-left: 2px solid var(--accent);
+    color: var(--text); font-size: 12px; font-variant-numeric: tabular-nums;
+  }
+  .token-usage .tok { color: #fff; font-weight: 500; }
+  .token-usage .tok.up { color: var(--up); }
+  .section-title {
+    font-size: 20px; color: #fff; margin: 40px 0 16px;
+    padding: 8px 12px; background: var(--panel); border-left: 3px solid var(--accent);
+  }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 20px; margin-bottom: 16px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+  .up { color: var(--up); }
+  .down { color: var(--down); }
+  .neutral { color: var(--neutral); }
+  .theme {
+    border-top: 1px solid var(--border); padding: 16px 0;
+  }
+  .theme:first-child { border-top: none; padding-top: 0; }
+  .theme .cat {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    background: rgba(88,166,255,0.15); color: var(--accent);
+    border-radius: 3px; margin-right: 8px;
+  }
+  .theme h3 { margin: 4px 0 8px; font-size: 16px; color: #fff; }
+  .theme p { margin: 0; color: var(--text); font-size: 14px; }
+  .news-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .news-item:last-child { border-bottom: none; }
+  .news-item a { color: var(--text); text-decoration: none; }
+  .news-item a:hover { color: var(--accent); }
+  .news-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .news-group h4 { color: var(--accent); margin: 16px 0 4px; font-size: 13px; font-weight: 500; }
+  .news-group:first-child h4 { margin-top: 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .summary-card {
+    background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+    padding: 12px 16px; margin-bottom: 8px;
+  }
+  .summary-card strong { color: var(--accent); }
+  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); }
+  @media (max-width: 700px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    th, td { padding: 6px 8px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>📊 글로벌 마켓 대시보드</h1>
+  <div class="subtitle">
+    <span style="color:var(--accent);font-weight:500;">{{ data.date_kr }}</span>
+    · 데이터 페치: <strong style="color:#fff;">{{ data.generated_at_kr }} KST</strong>
+    · <span id="staleness" style="color:var(--muted);"></span>
+  </div>
+  <div class="market-status-bar">
+    {% for code, m in data.market_status.items() %}
+      <span class="status-chip {% if m.open %}status-open{% else %}status-closed{% endif %}" title="{{ m.hours }}">
+        {% if m.open %}🟢{% else %}⚫{% endif %} {{ m.market }} · {{ m.status }}
+      </span>
+    {% endfor %}
+  </div>
+  <div class="data-disclaimer">
+    ⚠️ Yahoo Finance 무료 API 기반 — 약 15분 지연. 각 종목별 실제 마지막 거래 시각은 표 우측 "기준(KST)" 컬럼 참조.<br>
+    🔄 <strong>수동 갱신 모드</strong>: 새 데이터를 받으려면 터미널에서 다음 실행 →
+    <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:3px;color:var(--accent);">cd ~/Desktop/db && .venv/bin/python generate.py</code>
+    그 후 브라우저 새로고침(⌘R). Claude API 토큰은 이 명령 실행 시에만 소모됩니다.
+  </div>
+  {% if data._usage %}
+  <div class="token-usage">
+    <strong>🪙 이번 페치 토큰</strong>
+    · input <span class="tok">{{ "{:,}".format(data._usage.input_tokens) }}</span>
+    · output <span class="tok">{{ "{:,}".format(data._usage.output_tokens) }}</span>
+    {% if data._usage.cache_read_tokens %}· cache_read <span class="tok up">{{ "{:,}".format(data._usage.cache_read_tokens) }}</span>{% endif %}
+    {% if data._usage.cache_write_tokens %}· cache_write <span class="tok">{{ "{:,}".format(data._usage.cache_write_tokens) }}</span>{% endif %}
+    {% if data._usage_totals %}
+    <span style="color:var(--muted);margin-left:12px;">
+      | 누적 ({{ data._usage_run_count }}회): <strong style="color:var(--accent);">{{ "{:,}".format(data._usage_totals.total) }}</strong> tokens
+    </span>
+    {% endif %}
+  </div>
+  {% endif %}
+  <nav class="toc">
+    <a href="#exec">시장 요약</a>
+    <a href="#index">시장 지표</a>
+    <a href="#tech">기술적 지표</a>
+    <a href="#calendar">예정 지표</a>
+    <a href="#news">뉴스</a>
+  </nav>
+</header>
+
+<script>
+(function() {
+  var fetched = new Date("{{ data.generated_at }}");
+  var el = document.getElementById('staleness');
+  if (!el) return;
+  function update() {
+    var diffMin = Math.floor((Date.now() - fetched.getTime()) / 60000);
+    var label;
+    if (diffMin < 1) label = '방금 페치됨';
+    else if (diffMin < 60) label = diffMin + '분 전 페치';
+    else label = Math.floor(diffMin / 60) + '시간 ' + (diffMin % 60) + '분 전 페치';
+    el.textContent = label;
+    // Color cue: red if very stale
+    if (diffMin > 60) el.style.color = 'var(--down)';
+    else if (diffMin > 15) el.style.color = '#d4a72c';
+  }
+  update();
+  setInterval(update, 30000);
+})();
+</script>
+
+<script>
+(function() {
+  var seconds = 60;
+  var el = document.getElementById('refresh-countdown');
+  if (!el) return;
+  setInterval(function() {
+    seconds--;
+    if (seconds <= 0) { el.textContent = '갱신 중...'; return; }
+    el.textContent = '다음 갱신 ' + seconds + '초 후';
+  }, 1000);
+})();
+</script>
+
+<h2 class="section-title" id="exec">📌 시장 요약</h2>
+<div class="panel">
+  {% if summary.headline %}<h3 style="margin-top:0;color:#fff;">{{ summary.headline }}</h3>{% endif %}
+  {% if summary.market_summary %}
+    <div class="summary-card"><strong>증시</strong> {{ summary.market_summary.stocks }}</div>
+    <div class="summary-card"><strong>환율</strong> {{ summary.market_summary.fx }}</div>
+    <div class="summary-card"><strong>금리</strong> {{ summary.market_summary.rates }}</div>
+  {% endif %}
+  {% for theme in summary.themes or [] %}
+    <div class="theme">
+      <span class="cat">{{ theme.category }}</span>
+      <h3>{{ theme.title }}</h3>
+      <p>{{ theme.body }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+<h2 class="section-title" id="index">01 시장 지표</h2>
+
+<div class="panel">
+  <h3 style="margin-top:0;">주요 지수
+    <span style="color:var(--muted);font-size:12px;font-weight:400;">(기준 시각은 한국시간(KST))</span>
+    {% if data.market.kis_active %}
+    <span style="background:rgba(63,185,80,0.15);color:var(--up);border:1px solid rgba(63,185,80,0.3);
+                 font-size:11px;padding:2px 8px;border-radius:3px;margin-left:8px;">
+      🔴 LIVE (한국투자증권 OpenAPI)
+    </span>
+    {% endif %}
+  </h3>
+  <table>
+    <thead><tr><th>지수</th><th class="num">현재</th><th class="num">변동</th><th class="num">변동%</th><th>방향</th><th class="num">기준(KST)</th></tr></thead>
+    <tbody>
+    {% for q in data.market.indices %}
+      <tr>
+        <td>
+          {{ q.name }}
+          {% if q.source == 'KIS' %}<span style="color:var(--up);font-size:10px;">🔴</span>{% endif %}
+        </td>
+        <td class="num">{{ q.price | num }}</td>
+        <td class="num {% if q.change and q.change > 0 %}up{% elif q.change and q.change < 0 %}down{% endif %}">{{ q.change | change }}</td>
+        <td class="num {% if q.change_pct and q.change_pct > 0 %}up{% elif q.change_pct and q.change_pct < 0 %}down{% endif %}">{{ q.change_pct | pct }}</td>
+        <td class="{% if q.direction == '▲' %}up{% elif q.direction == '▼' %}down{% else %}neutral{% endif %}">{{ q.direction }}</td>
+        <td class="num neutral" style="font-size:12px;">{{ q.as_of_kst or '—' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <h3 style="margin-top:0;">원자재</h3>
+    <table>
+      <tbody>
+      {% for q in data.market.commodities %}
+        <tr>
+          <td>{{ q.name }}</td>
+          <td class="num">{{ q.price | num }}</td>
+          <td class="num {% if q.change_pct and q.change_pct > 0 %}up{% elif q.change_pct and q.change_pct < 0 %}down{% endif %}">{{ q.change_pct | pct }}</td>
+          <td class="num neutral" style="font-size:11px;">{{ q.as_of_kst or '—' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">암호화폐</h3>
+    <table>
+      <tbody>
+      {% for q in data.market.crypto %}
+        <tr>
+          <td>{{ q.name }}</td>
+          <td class="num">${{ q.price | num(0) }}</td>
+          <td class="num {% if q.change_pct and q.change_pct > 0 %}up{% elif q.change_pct and q.change_pct < 0 %}down{% endif %}">{{ q.change_pct | pct }}</td>
+          <td class="num neutral" style="font-size:11px;">{{ q.as_of_kst or '—' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <h3 style="margin-top:0;">환율</h3>
+    <table>
+      <tbody>
+      {% for q in data.market.fx %}
+        <tr>
+          <td>{{ q.name }}</td>
+          <td class="num">{{ q.price | num(4) }}</td>
+          <td class="num {% if q.change_pct and q.change_pct > 0 %}up{% elif q.change_pct and q.change_pct < 0 %}down{% endif %}">{{ q.change_pct | pct }}</td>
+          <td class="num neutral" style="font-size:11px;">{{ q.as_of_kst or '—' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">미국 국채</h3>
+    <table>
+      <tbody>
+      {% for q in data.market.us_bonds %}
+        <tr>
+          <td>{{ q.name }}</td>
+          <td class="num">{{ q.price | num(3) }}%</td>
+          <td class="num {% if q.change and q.change > 0 %}up{% elif q.change and q.change < 0 %}down{% endif %}">{{ q.change | change(3) }}p</td>
+          <td class="num neutral" style="font-size:11px;">{{ q.as_of_kst or '—' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if data.kr_bonds and data.kr_bonds.rows %}
+<div class="panel">
+  <h3 style="margin-top:0;">한국 채권 / 단기금리
+    <span style="color:var(--muted);font-size:12px;font-weight:400;">
+      · 출처: Naver Finance
+      · 기준(KST): {{ data.kr_bonds.as_of_kst or '—' }}
+    </span>
+  </h3>
+  <table>
+    <thead><tr><th>종목</th><th class="num">현재(%)</th><th class="num">변동</th><th>방향</th></tr></thead>
+    <tbody>
+    {% for b in data.kr_bonds.rows %}
+      <tr>
+        <td>{{ b.name }}</td>
+        <td class="num">{{ b.price | num(2) }}%</td>
+        <td class="num {% if b.change and b.change > 0 %}up{% elif b.change and b.change < 0 %}down{% endif %}">{{ b.change | change(2) }}p</td>
+        <td class="{% if b.direction == '▲' %}up{% elif b.direction == '▼' %}down{% else %}neutral{% endif %}">{{ b.direction }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<h2 class="section-title" id="tech">02 기술적 지표</h2>
+
+<div class="grid-2">
+  <div class="panel">
+    <h3 style="margin-top:0;">S&P 500 섹터 등락률
+      {% if data.sectors and data.sectors[0].as_of_kst %}<span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): {{ data.sectors[0].as_of_kst }}</span>{% endif %}
+    </h3>
+    <table>
+      <tbody>
+      {% for s in data.sectors %}
+        <tr>
+          <td>{{ s.name }}</td>
+          <td class="num {% if s.change_pct and s.change_pct > 0 %}up{% elif s.change_pct and s.change_pct < 0 %}down{% endif %}">{{ s.change_pct | pct }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">VIX 기간구조
+      {% if data.market.vix_term and data.market.vix_term[1].as_of_kst %}<span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): {{ data.market.vix_term[1].as_of_kst }}</span>{% endif %}
+    </h3>
+    <table>
+      <tbody>
+      {% for v in data.market.vix_term %}
+        <tr>
+          <td>{{ v.name }}</td>
+          <td class="num">{{ v.price | num }}</td>
+          <td class="num {% if v.change_pct and v.change_pct > 0 %}up{% elif v.change_pct and v.change_pct < 0 %}down{% endif %}">{{ v.change_pct | pct }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid-2">
+  {% if data.cnn_fg %}
+  <div class="panel">
+    <h3 style="margin-top:0;">시장 심리 — CNN Fear &amp; Greed
+      {% if data.cnn_fg.as_of_kst %}<span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): {{ data.cnn_fg.as_of_kst }}</span>{% endif %}
+    </h3>
+    <table>
+      <tbody>
+        <tr><td>현재</td><td class="num"><strong style="font-size:18px;color:{% if data.cnn_fg.score < 25 %}var(--down){% elif data.cnn_fg.score > 75 %}var(--up){% else %}var(--text){% endif %};">{{ data.cnn_fg.score }}</strong> · {{ data.cnn_fg.rating }}</td></tr>
+        <tr><td>전일 종가</td><td class="num">{{ data.cnn_fg.previous_close }}</td></tr>
+        <tr><td>1주일 전</td><td class="num">{{ data.cnn_fg.previous_1_week }}</td></tr>
+        <tr><td>1개월 전</td><td class="num">{{ data.cnn_fg.previous_1_month }}</td></tr>
+      </tbody>
+    </table>
+    <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+      🔴 0–25 극단공포 · 26–44 공포 · 45–55 중립 · 56–75 탐욕 · 76–100 극단탐욕
+    </div>
+  </div>
+  {% endif %}
+  {% if data.bdry %}
+  <div class="panel">
+    <h3 style="margin-top:0;">시장 지표
+      {% if data.bdry.as_of_kst %}<span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): {{ data.bdry.as_of_kst }}</span>{% endif %}
+    </h3>
+    <table>
+      <tbody>
+        <tr>
+          <td>{{ data.bdry.name }}</td>
+          <td class="num">${{ data.bdry.price | num }}</td>
+          <td class="num {% if data.bdry.change_pct and data.bdry.change_pct > 0 %}up{% elif data.bdry.change_pct and data.bdry.change_pct < 0 %}down{% endif %}">{{ data.bdry.change_pct | pct }}</td>
+          <td class="{% if data.bdry.direction == '▲' %}up{% elif data.bdry.direction == '▼' %}down{% else %}neutral{% endif %}">{{ data.bdry.direction }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+      ※ BDRY ETF는 Baltic Dry Index를 추종하는 펀드로, 해운업황 프록시로 사용
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% if data.spy_options %}
+<div class="panel">
+  <h3 style="margin-top:0;">SPY 옵션 (만기: {{ data.spy_options.expiry }})
+    {% if data.spy_options.as_of_kst %}<span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): {{ data.spy_options.as_of_kst }}</span>{% endif %}
+  </h3>
+  <table>
+    <thead><tr><th>항목</th><th class="num">값</th></tr></thead>
+    <tbody>
+      <tr><td>SPY 현재가</td><td class="num">${{ data.spy_options.spot | num }}</td></tr>
+      <tr><td>Call 거래량</td><td class="num">{{ "{:,}".format(data.spy_options.call_volume) }}</td></tr>
+      <tr><td>Put 거래량</td><td class="num">{{ "{:,}".format(data.spy_options.put_volume) }}</td></tr>
+      <tr>
+        <td>P/C Volume Ratio</td>
+        <td class="num">
+          <strong>{{ data.spy_options.pc_ratio }}</strong>
+          {% if data.spy_options.pc_ratio < 0.7 %}<span class="up">낙관</span>
+          {% elif data.spy_options.pc_ratio > 1.2 %}<span class="down">비관</span>
+          {% else %}<span class="neutral">중립</span>{% endif %}
+        </td>
+      </tr>
+      <tr><td>Max Pain Strike</td><td class="num"><strong>${{ "{:.0f}".format(data.spy_options.max_pain) }}</strong></td></tr>
+    </tbody>
+  </table>
+  <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+    P/C Ratio: &lt;0.7 낙관 · 0.7–1.2 중립 · &gt;1.2 비관(헤지 수요) ※ SPY는 헤지 활용도가 높아 일반 P/C보다 상시 높게 형성<br>
+    Max Pain: 옵션 매도자(마켓메이커)의 총 지불액이 최소가 되는 만기 가격 — 주가가 이 방향으로 끌리는 경향 (±20% 범위로 산출)
+  </div>
+</div>
+{% endif %}
+
+<h2 class="section-title" id="calendar">03 예정 지표</h2>
+<div class="panel">
+  {% if data.econ_calendar %}
+  <table>
+    <thead><tr><th>날짜</th><th>요일</th><th>시간(KST)</th><th>지표</th><th>주기</th></tr></thead>
+    <tbody>
+    {% for e in data.econ_calendar %}
+      <tr>
+        <td>{{ e.date }}</td>
+        <td>{{ e.weekday }}</td>
+        <td>{{ e.time_kst }}</td>
+        <td>{{ e.indicator }}</td>
+        <td><span class="neutral">{{ e.freq }}</span></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+    ※ 향후 14일간 주요 미국 경제지표 (FOMC + 주간 신규실업수당청구) — 하드코딩된 일정. 추가 지표가 필요하면 collectors.py의 collect_econ_calendar() 확장.
+  </div>
+  {% else %}
+  <div class="neutral">예정 지표 없음</div>
+  {% endif %}
+</div>
+
+<h2 class="section-title" id="news">04 뉴스 헤드라인</h2>
+
+<div class="grid-2">
+  <div class="panel">
+    <h3 style="margin-top:0;">국내 뉴스</h3>
+    {% for group in data.news.domestic %}
+      <div class="news-group">
+        <h4>🔍 {{ group.query }}</h4>
+        {% for item in group['items'] %}
+          <div class="news-item">
+            <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+            {% if item.published %}<div class="news-meta">{{ item.published }}</div>{% endif %}
+          </div>
+        {% else %}
+          <div class="news-item neutral">데이터 없음</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">글로벌 뉴스</h3>
+    {% for group in data.news['global'] %}
+      <div class="news-group">
+        <h4>🔍 {{ group.query }}</h4>
+        {% for item in group['items'] %}
+          <div class="news-item">
+            <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+            {% if item.published %}<div class="news-meta">{{ item.published }}</div>{% endif %}
+          </div>
+        {% else %}
+          <div class="news-item neutral">데이터 없음</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<footer>
+  글로벌 마켓 대시보드 · 데이터 페치: {{ data.generated_at_kr }} (KST)
+  · Sources: Yahoo Finance (~15분 지연), Naver Finance, CNN, Google News RSS · Powered by Claude
+  · 수동 갱신 모드 — 자동 새로고침 비활성
+</footer>
+
+</div>
+</body>
+</html>
