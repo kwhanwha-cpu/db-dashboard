@@ -57,7 +57,16 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/dashboard.html reports/2026 reports/2027 2>/dev/null || true
+
+          echo "=== pre-add status ==="
+          git status --short
+          echo "=== generated files on disk ==="
+          ls -la reports/dashboard.html reports/2026/*/*/*.html 2>/dev/null | tail -5
+
+          git add -A reports/
+          echo "=== post-add staged files ==="
+          git diff --cached --name-only
+
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
