@@ -80,10 +80,11 @@ def _save_token(app_key: str, token: str) -> None:
 
 
 def get_access_token(cfg: KISConfig) -> str | None:
-    """Fetch or reuse a 24-hour OAuth token. KIS rate-limits this heavily
-    (~1 token per minute per app), so cache aggressively."""
+    """Fetch or reuse a 24-hour OAuth token."""
+    import sys
     cached = _load_cached_token(cfg.app_key)
     if cached:
+        print("[KIS] using cached token", file=sys.stderr, flush=True)
         return cached
     try:
         r = requests.post(
@@ -96,17 +97,24 @@ def get_access_token(cfg: KISConfig) -> str | None:
             },
             timeout=10,
         )
-        r.raise_for_status()
+        if r.status_code != 200:
+            print(f"[KIS] token request failed: HTTP {r.status_code} body={r.text[:300]}", file=sys.stderr, flush=True)
+            return None
         token = r.json().get("access_token")
         if token:
             _save_token(cfg.app_key, token)
+            print(f"[KIS] new token issued (len={len(token)})", file=sys.stderr, flush=True)
+        else:
+            print(f"[KIS] token response missing access_token: {r.text[:300]}", file=sys.stderr, flush=True)
         return token
-    except Exception:
+    except Exception as e:
+        print(f"[KIS] token request exception: {type(e).__name__}: {e}", file=sys.stderr, flush=True)
         return None
 
 
 def fetch_index_quote(cfg: KISConfig, token: str, iscd: str) -> dict[str, Any] | None:
     """Fetch realtime KR index quote. tr_id=FHPUP02100000 (업종 현재가)."""
+    import sys
     try:
         r = requests.get(
             f"{cfg.base_url}/uapi/domestic-stock/v1/quotations/inquire-index-price",
@@ -123,9 +131,12 @@ def fetch_index_quote(cfg: KISConfig, token: str, iscd: str) -> dict[str, Any] |
             },
             timeout=10,
         )
-        r.raise_for_status()
+        if r.status_code != 200:
+            print(f"[KIS] quote {iscd} HTTP {r.status_code}: {r.text[:300]}", file=sys.stderr, flush=True)
+            return None
         body = r.json()
         if body.get("rt_cd") != "0":
+            print(f"[KIS] quote {iscd} rt_cd={body.get('rt_cd')} msg={body.get('msg1','')[:200]}", file=sys.stderr, flush=True)
             return None
         o = body.get("output") or {}
         price = float(o.get("bstp_nmix_prpr") or 0)
