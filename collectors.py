@@ -362,11 +362,19 @@ NEWS_CATEGORIES = [
     {
         "category": "보험사",
         "query": '"생명보험" OR "손해보험" OR "삼성생명" OR "한화생명" OR "교보생명" OR "DB손해보험" OR "현대해상" OR "메리츠화재"',
+        # 보험사 카테고리에서 한화생명 우선 노출
+        "boost_query": '"한화생명" (보험 OR 실적 OR 자본 OR 디폴트옵션 OR IFRS17 OR 영업이익 OR 매출)',
+        "boost_count": 2,
+        "boost_must_contain": "한화생명",  # 제목에 "한화생명" 명시된 항목만 통과
         "hl": "ko", "gl": "KR", "ceid": "KR:ko",
     },
     {
         "category": "한화그룹",
         "query": '"한화그룹" OR "한화에어로스페이스" OR "한화오션" OR "한화솔루션" OR "한화시스템" OR "한화생명" OR "한화투자증권"',
+        # 한화그룹 카테고리에서 한화생명 우선 노출
+        "boost_query": '"한화생명" (보험 OR 실적 OR 자본 OR 디폴트옵션 OR IFRS17 OR 영업이익 OR 매출)',
+        "boost_count": 2,
+        "boost_must_contain": "한화생명",
         "hl": "ko", "gl": "KR", "ceid": "KR:ko",
     },
     {
@@ -425,10 +433,15 @@ def collect_news() -> list[dict[str, Any]]:
     for c in NEWS_CATEGORIES:
         items = _google_news(c["query"], c["hl"], c["gl"], c["ceid"], limit=5)
         if c.get("boost_query"):
+            # Fetch extra boost results so post-filtering still leaves enough
             boost = _google_news(
                 c["boost_query"], c["hl"], c["gl"], c["ceid"],
-                limit=c.get("boost_count", 3),
+                limit=max(c.get("boost_count", 3) * 3, 10),
             )
+            must = c.get("boost_must_contain")
+            if must:
+                boost = [b for b in boost if must in b["title"]]
+            boost = boost[:c.get("boost_count", 3)]
             seen = {b["link"] for b in boost}
             items = boost + [it for it in items if it["link"] not in seen]
             items = items[:5]
