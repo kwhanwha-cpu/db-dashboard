@@ -354,18 +354,17 @@ NEWS_CATEGORIES = [
     {
         "category": "M&A",
         "query": '"인수합병" OR "M&A" OR "매각 추진" OR "지분 인수" OR "경영권 인수"',
-        # Surface Hanwha-related deal news at the top of the M&A category
-        "boost_query": '"한화" ("인수" OR "매각" OR "수주" OR "지분" OR "M&A" OR "합병")',
-        "boost_count": 3,
+        # M&A 카테고리: 한화생명/한화투자증권 + deal 키워드 동시 포함 시에만 부스트
+        "boost_query": '("한화생명" OR "한화투자증권") (M&A OR 인수 OR 매각 OR 합병 OR 지분 OR 인수전 OR 유증 OR 자본확충)',
+        "boost_count": 2,
+        "boost_must_contain": ["한화생명", "한화투자증권"],
+        "boost_must_also_contain": ["M&A", "인수", "매각", "합병", "지분", "인수전", "유증", "자본확충", "자본조달"],
         "hl": "ko", "gl": "KR", "ceid": "KR:ko",
     },
     {
         "category": "보험사",
         "query": '"생명보험" OR "손해보험" OR "삼성생명" OR "한화생명" OR "교보생명" OR "DB손해보험" OR "현대해상" OR "메리츠화재"',
-        # 보험사 카테고리에서 한화생명 우선 노출
-        "boost_query": '"한화생명" (보험 OR 실적 OR 자본 OR 디폴트옵션 OR IFRS17 OR 영업이익 OR 매출)',
-        "boost_count": 2,
-        "boost_must_contain": "한화생명",  # 제목에 "한화생명" 명시된 항목만 통과
+        # 한화생명 부스트는 M&A로 이관 — 보험사는 일반 업계 뉴스 위주
         "hl": "ko", "gl": "KR", "ceid": "KR:ko",
     },
     {
@@ -425,30 +424,60 @@ def _google_news(query: str, hl: str, gl: str, ceid: str, limit: int = 5) -> lis
     return items[:limit]
 
 
+def _title_matches(title: str, must: str | list[str]) -> bool:
+    if isinstance(must, list):
+        return any(m in title for m in must)
+    return must in title
+
+
+def _normalize_title(t: str) -> str:
+    """Strip trailing source suffix ('- 매체명') and lowercase for fuzzy dedup."""
+    s = re.sub(r"\s*[-–—]\s*[^-–—]+$", "", t).strip().lower()
+    return re.sub(r"\s+", " ", s)
+
+
 def collect_news() -> list[dict[str, Any]]:
-    """Return a flat list of news categories. Each entry has category, query, items.
-    If a category defines `boost_query`, those results are prepended (deduped) so
-    the boosted topic gets visibility within that category."""
+    """Categorized news with cross-category dedup (by link AND normalized title)."""
     result: list[dict[str, Any]] = []
+    seen_links: set[str] = set()
+    seen_titles: set[str] = set()
+
     for c in NEWS_CATEGORIES:
-        items = _google_news(c["query"], c["hl"], c["gl"], c["ceid"], limit=5)
+        items = _google_news(c["query"], c["hl"], c["gl"], c["ceid"], limit=25)
+
         if c.get("boost_query"):
-            # Fetch extra boost results so post-filtering still leaves enough
             boost = _google_news(
                 c["boost_query"], c["hl"], c["gl"], c["ceid"],
-                limit=max(c.get("boost_count", 3) * 3, 10),
+                limit=max(c.get("boost_count", 3) * 5, 15),
             )
             must = c.get("boost_must_contain")
             if must:
-                boost = [b for b in boost if must in b["title"]]
+                boost = [b for b in boost if _title_matches(b["title"], must)]
+            also = c.get("boost_must_also_contain")
+            if also:
+                boost = [b for b in boost if _title_matches(b["title"], also)]
             boost = boost[:c.get("boost_count", 3)]
-            seen = {b["link"] for b in boost}
-            items = boost + [it for it in items if it["link"] not in seen]
-            items = items[:5]
+            boost_links = {b["link"] for b in boost}
+            items = boost + [it for it in items if it["link"] not in boost_links]
+
+        # Cross-category dedup by link AND normalized title (catches re-posted stories)
+        deduped: list[dict[str, Any]] = []
+        for it in items:
+            if it["link"] in seen_links:
+                continue
+            nt = _normalize_title(it["title"])
+            if nt in seen_titles:
+                continue
+            deduped.append(it)
+            seen_links.add(it["link"])
+            seen_titles.add(nt)
+            if len(deduped) >= 5:
+                break
+
         result.append({
             "category": c["category"],
             "query": c["query"],
-            "items": items,
+            "items": deduped,
         })
     return result
 
