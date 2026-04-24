@@ -455,38 +455,21 @@
 <h2 class="section-title" id="news">04 뉴스 헤드라인</h2>
 
 <div class="grid-2">
+  {% for group in data.news %}
   <div class="panel">
-    <h3 style="margin-top:0;">국내 뉴스</h3>
-    {% for group in data.news.domestic %}
-      <div class="news-group">
-        <h4>🔍 {{ group.query }}</h4>
-        {% for item in group['items'] %}
-          <div class="news-item">
-            <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
-            {% if item.published %}<div class="news-meta">{{ item.published }}</div>{% endif %}
-          </div>
-        {% else %}
-          <div class="news-item neutral">데이터 없음</div>
-        {% endfor %}
+    <h3 style="margin-top:0;">{{ group.category }}
+      <span style="color:var(--muted);font-size:11px;font-weight:400;">· {{ group['items']|length }}건 · 최근 3일</span>
+    </h3>
+    {% for item in group['items'] %}
+      <div class="news-item">
+        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+        {% if item.published %}<div class="news-meta">{{ item.published }}</div>{% endif %}
       </div>
+    {% else %}
+      <div class="news-item neutral">최근 3일간 관련 뉴스 없음</div>
     {% endfor %}
   </div>
-  <div class="panel">
-    <h3 style="margin-top:0;">글로벌 뉴스</h3>
-    {% for group in data.news['global'] %}
-      <div class="news-group">
-        <h4>🔍 {{ group.query }}</h4>
-        {% for item in group['items'] %}
-          <div class="news-item">
-            <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
-            {% if item.published %}<div class="news-meta">{{ item.published }}</div>{% endif %}
-          </div>
-        {% else %}
-          <div class="news-item neutral">데이터 없음</div>
-        {% endfor %}
-      </div>
-    {% endfor %}
-  </div>
+  {% endfor %}
 </div>
 
 <footer>

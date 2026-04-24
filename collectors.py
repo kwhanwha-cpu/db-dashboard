@@ -345,18 +345,32 @@ def collect_bdry() -> dict[str, Any] | None:
 
 # ---------- News (Google News RSS) ----------
 
-NEWS_QUERIES_KR = [
-    "코스피 OR 코스닥",
-    "한국은행 금리",
-    "원달러 환율",
-    "삼성전자 OR SK하이닉스",
-]
-
-NEWS_QUERIES_GLOBAL = [
-    "Federal Reserve interest rate",
-    "S&P 500 stock market",
-    "oil price OPEC",
-    "China economy",
+NEWS_CATEGORIES = [
+    {
+        "category": "산업종합",
+        "query": '"반도체" OR "자동차 산업" OR "조선업" OR "배터리" OR "철강" OR "수출 실적"',
+        "hl": "ko", "gl": "KR", "ceid": "KR:ko",
+    },
+    {
+        "category": "M&A",
+        "query": '"인수합병" OR "M&A" OR "매각 추진" OR "지분 인수" OR "경영권 인수"',
+        "hl": "ko", "gl": "KR", "ceid": "KR:ko",
+    },
+    {
+        "category": "보험사",
+        "query": '"생명보험" OR "손해보험" OR "삼성생명" OR "한화생명" OR "교보생명" OR "DB손해보험" OR "현대해상" OR "메리츠화재"',
+        "hl": "ko", "gl": "KR", "ceid": "KR:ko",
+    },
+    {
+        "category": "한화그룹",
+        "query": '"한화그룹" OR "한화에어로스페이스" OR "한화오션" OR "한화솔루션" OR "한화시스템" OR "한화생명" OR "한화투자증권"',
+        "hl": "ko", "gl": "KR", "ceid": "KR:ko",
+    },
+    {
+        "category": "해외운용사",
+        "query": '("BlackRock" OR "Vanguard" OR "Fidelity" OR "Bridgewater Associates" OR "Citadel hedge" OR "Goldman asset" OR "PIMCO") (fund OR ETF OR "asset management" OR earnings OR inflow OR outflow)',
+        "hl": "en", "gl": "US", "ceid": "US:en",
+    },
 ]
 
 
@@ -400,10 +414,16 @@ def _google_news(query: str, hl: str, gl: str, ceid: str, limit: int = 5) -> lis
     return items[:limit]
 
 
-def collect_news() -> dict[str, list[dict[str, Any]]]:
-    domestic = [{"query": q, "items": _google_news(q, "ko", "KR", "KR:ko")} for q in NEWS_QUERIES_KR]
-    global_news = [{"query": q, "items": _google_news(q, "en", "US", "US:en")} for q in NEWS_QUERIES_GLOBAL]
-    return {"domestic": domestic, "global": global_news}
+def collect_news() -> list[dict[str, Any]]:
+    """Return a flat list of news categories. Each entry has category, query, items."""
+    return [
+        {
+            "category": c["category"],
+            "query": c["query"],
+            "items": _google_news(c["query"], c["hl"], c["gl"], c["ceid"]),
+        }
+        for c in NEWS_CATEGORIES
+    ]
 
 
 # ---------- Economic calendar (hardcoded, US-focused) ----------

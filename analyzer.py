@@ -169,10 +169,9 @@ def _build_payload(data: dict[str, Any]) -> dict[str, Any]:
         "cnn_fg": data.get("cnn_fg"),
         "spy_options": data.get("spy_options"),
         "bdry": data.get("bdry"),
-        "news_headlines": [
-            item["title"]
-            for group in data["news"]["domestic"] + data["news"]["global"]
-            for item in group["items"][:3]
+        "news_headlines_by_category": [
+            {"category": g["category"], "titles": [item["title"] for item in g["items"][:3]]}
+            for g in data["news"]
         ],
     }
 
