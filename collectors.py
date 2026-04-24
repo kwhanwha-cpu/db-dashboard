@@ -354,6 +354,9 @@ NEWS_CATEGORIES = [
     {
         "category": "M&A",
         "query": '"인수합병" OR "M&A" OR "매각 추진" OR "지분 인수" OR "경영권 인수"',
+        # Surface Hanwha-related deal news at the top of the M&A category
+        "boost_query": '"한화" ("인수" OR "매각" OR "수주" OR "지분" OR "M&A" OR "합병")',
+        "boost_count": 3,
         "hl": "ko", "gl": "KR", "ceid": "KR:ko",
     },
     {
@@ -415,15 +418,26 @@ def _google_news(query: str, hl: str, gl: str, ceid: str, limit: int = 5) -> lis
 
 
 def collect_news() -> list[dict[str, Any]]:
-    """Return a flat list of news categories. Each entry has category, query, items."""
-    return [
-        {
+    """Return a flat list of news categories. Each entry has category, query, items.
+    If a category defines `boost_query`, those results are prepended (deduped) so
+    the boosted topic gets visibility within that category."""
+    result: list[dict[str, Any]] = []
+    for c in NEWS_CATEGORIES:
+        items = _google_news(c["query"], c["hl"], c["gl"], c["ceid"], limit=5)
+        if c.get("boost_query"):
+            boost = _google_news(
+                c["boost_query"], c["hl"], c["gl"], c["ceid"],
+                limit=c.get("boost_count", 3),
+            )
+            seen = {b["link"] for b in boost}
+            items = boost + [it for it in items if it["link"] not in seen]
+            items = items[:5]
+        result.append({
             "category": c["category"],
             "query": c["query"],
-            "items": _google_news(c["query"], c["hl"], c["gl"], c["ceid"]),
-        }
-        for c in NEWS_CATEGORIES
-    ]
+            "items": items,
+        })
+    return result
 
 
 # ---------- Economic calendar (hardcoded, US-focused) ----------
