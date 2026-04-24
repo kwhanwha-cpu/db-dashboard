@@ -58,18 +58,22 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          echo "=== pre-add status ==="
-          git status --short
-          echo "=== generated files on disk ==="
-          ls -la reports/dashboard.html reports/2026/*/*/*.html 2>/dev/null | tail -5
-
           git add -A reports/
-          echo "=== post-add staged files ==="
-          git diff --cached --name-only
-
           if git diff --cached --quiet; then
             echo "No changes to commit"
-          else
-            git commit -m "🔄 Refresh dashboard $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            git push
+            exit 0
           fi
+
+          git commit -m "🔄 Refresh dashboard $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          # Retry push with rebase on conflict (handles concurrent runs)
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Push succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt/3). Rebasing on origin/main..."
+            git pull --rebase origin main || { echo "Rebase failed"; exit 1; }
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
