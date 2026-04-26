@@ -215,8 +215,8 @@ def _fallback_summary(data: dict[str, Any]) -> dict[str, Any]:
         )
     else:
         stocks_lead = (
-            f"[전 글로벌 휴장] 직전 마감 — S&P500 {_pct(sp)} · KOSPI {_pct(kospi)} "
-            f"· NIKKEI {_pct(nikkei)}"
+            f"📴 현재 거래 중인 글로벌 시장이 없음. 아래는 최근 거래일 마감값 — "
+            f"S&P500 {_pct(sp)} · KOSPI {_pct(kospi)} · NIKKEI {_pct(nikkei)}"
         )
     stocks = stocks_lead + " — " + _risk_tone(sp, kospi, vix)
     usdkrw = fx.get("USD/KRW", {})
@@ -332,7 +332,7 @@ def _fallback_summary(data: dict[str, Any]) -> dict[str, Any]:
         d = "상승" if p > 0.2 else "하락" if p < -0.2 else "보합"
         headline = f"[장중] S&P {d} {p:+.2f}% · VIX {vix.get('price', 0):.1f}"
     else:
-        headline = "전 글로벌 휴장 — 직전 마감 기준"
+        headline = "📴 글로벌 시장 모두 마감 — 최근 마감값 기준"
 
     return {
         "headline": headline,
