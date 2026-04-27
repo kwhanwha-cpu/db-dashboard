@@ -1,9 +1,9 @@
 name: Refresh dashboard
 
 on:
-  # Every 30 minutes
+  # Every 30 minutes — off-peak times (avoid :00 and :30 to dodge GitHub throttling)
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "7,37 * * * *"
   # Manual trigger from Actions tab
   workflow_dispatch: {}
   # Run on push to main (initial deploy)
