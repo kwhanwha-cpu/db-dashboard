@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>글로벌 마켓 대시보드 | 2026-11-02</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --up: #3fb950;
+    --down: #f85149;
+    --neutral: #8b949e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Noto Sans KR", sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 32px; }
+  h1 { margin: 0 0 4px; font-size: 28px; color: #fff; }
+  .subtitle { color: var(--muted); font-size: 14px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .toc a {
+    color: var(--accent); text-decoration: none; font-size: 13px;
+    padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px;
+  }
+  .toc a:hover { background: var(--panel); }
+  .market-status-bar {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
+  }
+  .status-chip {
+    font-size: 12px; padding: 4px 10px; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--panel);
+  }
+  .status-open { color: var(--up); border-color: rgba(63,185,80,0.4); }
+  .status-closed { color: var(--muted); }
+  .data-disclaimer {
+    margin-top: 10px; padding: 8px 12px;
+    background: rgba(248,81,73,0.08); border-left: 2px solid var(--down);
+    color: var(--muted); font-size: 12px; line-height: 1.5;
+  }
+  .token-usage {
+    margin-top: 8px; padding: 8px 12px;
+    background: rgba(88,166,255,0.06); border-left: 2px solid var(--accent);
+    color: var(--text); font-size: 12px; font-variant-numeric: tabular-nums;
+  }
+  .token-usage .tok { color: #fff; font-weight: 500; }
+  .token-usage .tok.up { color: var(--up); }
+  .section-title {
+    font-size: 20px; color: #fff; margin: 40px 0 16px;
+    padding: 8px 12px; background: var(--panel); border-left: 3px solid var(--accent);
+  }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 20px; margin-bottom: 16px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+  .up { color: var(--up); }
+  .down { color: var(--down); }
+  .neutral { color: var(--neutral); }
+  .theme {
+    border-top: 1px solid var(--border); padding: 16px 0;
+  }
+  .theme:first-child { border-top: none; padding-top: 0; }
+  .theme .cat {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    background: rgba(88,166,255,0.15); color: var(--accent);
+    border-radius: 3px; margin-right: 8px;
+  }
+  .theme h3 { margin: 4px 0 8px; font-size: 16px; color: #fff; }
+  .theme p { margin: 0; color: var(--text); font-size: 14px; }
+  .news-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .news-item:last-child { border-bottom: none; }
+  .news-item a { color: var(--text); text-decoration: none; }
+  .news-item a:hover { color: var(--accent); }
+  .news-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .news-group h4 { color: var(--accent); margin: 16px 0 4px; font-size: 13px; font-weight: 500; }
+  .news-group:first-child h4 { margin-top: 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .summary-card {
+    background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+    padding: 12px 16px; margin-bottom: 8px;
+  }
+  .summary-card strong { color: var(--accent); }
+  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); }
+  @media (max-width: 700px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    th, td { padding: 6px 8px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>📊 글로벌 마켓 대시보드</h1>
+  <div class="subtitle">
+    <span style="color:var(--accent);font-weight:500;">2026년 11월 02일 (월)</span>
+    · 데이터 페치: <strong style="color:#fff;">2026-11-02 10:46:23 KST</strong>
+    · <span id="staleness" style="color:var(--muted);"></span>
+  </div>
+  <div class="market-status-bar">
+    
+      <span class="status-chip status-open" title="09:00-15:30 KST">
+        🟢 KOSPI · 장중
+      </span>
+    
+      <span class="status-chip status-open" title="09:00-15:00 KST">
+        🟢 NIKKEI · 장중
+      </span>
+    
+      <span class="status-chip status-open" title="10:00-16:00 KST">
+        🟢 HSI · 장중
+      </span>
+    
+      <span class="status-chip status-open" title="10:30-16:00 KST">
+        🟢 SHANGHAI · 장중
+      </span>
+    
+      <span class="status-chip status-closed" title="22:30-05:00 KST (EDT 기준)">
+        ⚫ S&P500 · 마감
+      </span>
+    
+  </div>
+  <div class="data-disclaimer">
+    ⚠️ Yahoo Finance 무료 API 기반 — 약 15분 지연. 각 종목별 실제 마지막 거래 시각은 표 우측 "기준(KST)" 컬럼 참조.<br>
+    🔄 <strong>수동 갱신 모드</strong>: 새 데이터를 받으려면 터미널에서 다음 실행 →
+    <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:3px;color:var(--accent);">cd ~/Desktop/db && .venv/bin/python generate.py</code>
+    그 후 브라우저 새로고침(⌘R). Claude API 토큰은 이 명령 실행 시에만 소모됩니다.
+  </div>
+  
+  <nav class="toc">
+    <a href="#exec">시장 요약</a>
+    <a href="#index">시장 지표</a>
+    <a href="#tech">기술적 지표</a>
+    <a href="#calendar">예정 지표</a>
+    <a href="#news">뉴스</a>
+  </nav>
+</header>
+
+<script>
+(function() {
+  var fetched = new Date("2026-11-02T10:46:23.363740+09:00");
+  var el = document.getElementById('staleness');
+  if (!el) return;
+  function update() {
+    var diffMin = Math.floor((Date.now() - fetched.getTime()) / 60000);
+    var label;
+    if (diffMin < 1) label = '방금 페치됨';
+    else if (diffMin < 60) label = diffMin + '분 전 페치';
+    else label = Math.floor(diffMin / 60) + '시간 ' + (diffMin % 60) + '분 전 페치';
+    el.textContent = label;
+    // Color cue: red if very stale
+    if (diffMin > 60) el.style.color = 'var(--down)';
+    else if (diffMin > 15) el.style.color = '#d4a72c';
+  }
+  update();
+  setInterval(update, 30000);
+})();
+</script>
+
+<script>
+(function() {
+  var seconds = 60;
+  var el = document.getElementById('refresh-countdown');
+  if (!el) return;
+  setInterval(function() {
+    seconds--;
+    if (seconds <= 0) { el.textContent = '갱신 중...'; return; }
+    el.textContent = '다음 갱신 ' + seconds + '초 후';
+  }, 1000);
+})();
+</script>
+
+<h2 class="section-title" id="exec">📌 시장 요약</h2>
+<div class="panel">
+  <h3 style="margin-top:0;color:#fff;">[장중] KOSPI 상승 +0.43%</h3>
+  
+    <div class="summary-card"><strong>증시</strong> [아시아 장중] KOSPI +0.43% · NIKKEI -0.13% · HSI +0.51% ／ [전일 마감] S&P500 -1.81% · NASDAQ -2.84% — 위험회피 확대</div>
+    <div class="summary-card"><strong>환율</strong> USD/KRW 1,337.98 (+0.00%), EUR/USD 1.1174 (-0.07%).</div>
+    <div class="summary-card"><strong>금리</strong> 미 10Y 4.929% (-6.0p).</div>
+  
+  
+    <div class="theme">
+      <span class="cat">매크로</span>
+      <h3>VIX 19.4 — 주의 국면</h3>
+      <p>공포지수가 19.4로 주의 국면을 시사합니다. 달러 인덱스는 101.92 (+0.04%)로 달러 강세 흐름을 보이고 있습니다. CNN F&G 26.2 (fear)와 함께 보면 시장 심리는 공포 우위입니다.</p>
+    </div>
+  
+    <div class="theme">
+      <span class="cat">금리경로</span>
+      <h3>미국 10년물 4.929% — 하락</h3>
+      <p>미국 10년물 금리가 4.929%로 전일 대비 -6.0bp 변동했습니다. </p>
+    </div>
+  
+    <div class="theme">
+      <span class="cat">섹터로테이션</span>
+      <h3>에너지 주도 (+1.88%) — risk-on 신호</h3>
+      <p>S&P500 섹터에서 에너지이(가) +1.88%로 가장 강세를 보였고, 기술이(가) -4.87%로 가장 부진했습니다. 순환주 주도는 경기 민감주 선호 강화로 해석되며, 섹터 간 격차 6.75%p가 시장의 방향성 베팅 강도를 나타냅니다.</p>
+    </div>
+  
+    <div class="theme">
+      <span class="cat">수급</span>
+      <h3>SPY P/C Ratio 1.249 — 비관적 (풋 쏠림, 헤지 수요 증가)</h3>
+      <p>SPY 옵션 거래량 기준 P/C Ratio가 1.249로 비관적 (풋 쏠림, 헤지 수요 증가)을 시사합니다. Max Pain은 $772로, 현재가 $756 대비 +16.3달러 격차가 있어 옵션 만기(2026-11-02)까지의 단기 자석 효과를 주시할 만합니다.</p>
+    </div>
+  
+    <div class="theme">
+      <span class="cat">지정학</span>
+      <h3>WTI $101.75 (-2.28%)</h3>
+      <p>WTI 원유가 $101.75로 -2.28% 변동했습니다. 중동 정세 또는 OPEC+ 공급 정책 변화가 가격에 반영되고 있는지, USD/KRW 1,337.98 환율 흐름과 함께 인플레이션 재가속 리스크를 점검할 시점입니다.</p>
+    </div>
+  
+</div>
+
+<h2 class="section-title" id="index">01 시장 지표</h2>
+
+<div class="panel">
+  <h3 style="margin-top:0;">주요 지수
+    <span style="color:var(--muted);font-size:12px;font-weight:400;">(기준 시각은 한국시간(KST))</span>
+    
+    <span style="background:rgba(63,185,80,0.15);color:var(--up);border:1px solid rgba(63,185,80,0.3);
+                 font-size:11px;padding:2px 8px;border-radius:3px;margin-left:8px;">
+      🔴 LIVE (한국투자증권 OpenAPI)
+    </span>
+    
+  </h3>
+  <table>
+    <thead><tr><th>지수</th><th class="num">현재</th><th class="num">변동</th><th class="num">변동%</th><th>방향</th><th class="num">기준(KST)</th></tr></thead>
+    <tbody>
+    
+      <tr>
+        <td>
+          KOSPI
+          <span style="color:var(--up);font-size:10px;">🔴</span>
+        </td>
+        <td class="num">5,755.26</td>
+        <td class="num up">+24.52</td>
+        <td class="num up">+0.43%</td>
+        <td class="up">▲</td>
+        <td class="num neutral" style="font-size:12px;">11-02 10:46</td>
+      </tr>
+    
+      <tr>
+        <td>
+          KOSDAQ
+          <span style="color:var(--up);font-size:10px;">🔴</span>
+        </td>
+        <td class="num">726.07</td>
+        <td class="num up">+1.69</td>
+        <td class="num up">+0.23%</td>
+        <td class="up">▲</td>
+        <td class="num neutral" style="font-size:12px;">11-02 10:46</td>
+      </tr>
+    
+      <tr>
+        <td>
+          S&P500
+          
+        </td>
+        <td class="num">7,580.95</td>
+        <td class="num down">-139.44</td>
+        <td class="num down">-1.81%</td>
+        <td class="down">▼</td>
+        <td class="num neutral" style="font-size:12px;">10-31 04:55</td>
+      </tr>
+    
+      <tr>
+        <td>
+          NASDAQ
+          
+        </td>
+        <td class="num">25,440.68</td>
+        <td class="num down">-744.04</td>
+        <td class="num down">-2.84%</td>
+        <td class="down">▼</td>
+        <td class="num neutral" style="font-size:12px;">10-31 04:55</td>
+      </tr>
+    
+      <tr>
+        <td>
+          DOW
+          
+        </td>
+        <td class="num">51,774.18</td>
+        <td class="num down">-568.38</td>
+        <td class="num down">-1.09%</td>
+        <td class="down">▼</td>
+        <td class="num neutral" style="font-size:12px;">10-31 04:55</td>
+      </tr>
+    
+      <tr>
+        <td>
+          NIKKEI
+          
+        </td>
+        <td class="num">63,210.26</td>
+        <td class="num down">-79.85</td>
+        <td class="num down">-0.13%</td>
+        <td class="down">▼</td>
+        <td class="num neutral" style="font-size:12px;">11-02 10:30</td>
+      </tr>
+    
+      <tr>
+        <td>
+          HANGSENG
+          
+        </td>
+        <td class="num">23,412.23</td>
+        <td class="num up">+117.81</td>
+        <td class="num up">+0.51%</td>
+        <td class="up">▲</td>
+        <td class="num neutral" style="font-size:12px;">11-02 10:30</td>
+      </tr>
+    
+      <tr>
+        <td>
+          SHANGHAI
+          
+        </td>
+        <td class="num">3,598.87</td>
+        <td class="num down">-0.15</td>
+        <td class="num down">-0.00%</td>
+        <td class="down">▼</td>
+        <td class="num neutral" style="font-size:12px;">11-02 10:30</td>
+      </tr>
+    
+      <tr>
+        <td>
+          VIX
+          
+        </td>
+        <td class="num">19.44</td>
+        <td class="num up">+2.24</td>
+        <td class="num up">+13.02%</td>
+        <td class="up">▲</td>
+        <td class="num neutral" style="font-size:12px;">10-31 05:10</td>
+      </tr>
+    
+      <tr>
+        <td>
+          달러 인덱스
+          
+        </td>
+        <td class="num">101.92</td>
+        <td class="num up">+0.04</td>
+        <td class="num up">+0.04%</td>
+        <td class="up">▲</td>
+        <td class="num neutral" style="font-size:12px;">11-02 10:35</td>
+      </tr>
+    
+    </tbody>
+  </table>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <h3 style="margin-top:0;">원자재</h3>
+    <table>
+      <tbody>
+      
+        <tr>
+          <td>금 ($/oz)</td>
+          <td class="num">3,921.60</td>
+          <td class="num up">+0.58%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:35</td>
+        </tr>
+      
+        <tr>
+          <td>은 ($/oz)</td>
+          <td class="num">49.98</td>
+          <td class="num up">+1.80%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:35</td>
+        </tr>
+      
+        <tr>
+          <td>구리 ($/lb)</td>
+          <td class="num">6.51</td>
+          <td class="num up">+0.78%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:35</td>
+        </tr>
+      
+        <tr>
+          <td>WTI ($/bbl)</td>
+          <td class="num">101.75</td>
+          <td class="num down">-2.28%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:35</td>
+        </tr>
+      
+        <tr>
+          <td>브렌트유 ($/bbl)</td>
+          <td class="num">111.18</td>
+          <td class="num down">-5.49%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:35</td>
+        </tr>
+      
+        <tr>
+          <td>천연가스 ($/MMBtu)</td>
+          <td class="num">2.91</td>
+          <td class="num up">+0.48%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:35</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">암호화폐</h3>
+    <table>
+      <tbody>
+      
+        <tr>
+          <td>비트코인 (BTC)</td>
+          <td class="num">$78,445</td>
+          <td class="num up">+1.30%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:45</td>
+        </tr>
+      
+        <tr>
+          <td>이더리움 (ETH)</td>
+          <td class="num">$2,294</td>
+          <td class="num up">+1.81%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:45</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <h3 style="margin-top:0;">환율</h3>
+    <table>
+      <tbody>
+      
+        <tr>
+          <td>USD/KRW</td>
+          <td class="num">1,337.9800</td>
+          <td class="num ">0.00%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:45</td>
+        </tr>
+      
+        <tr>
+          <td>EUR/USD</td>
+          <td class="num">1.1174</td>
+          <td class="num down">-0.07%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:45</td>
+        </tr>
+      
+        <tr>
+          <td>USD/JPY</td>
+          <td class="num">157.7810</td>
+          <td class="num down">-0.01%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:45</td>
+        </tr>
+      
+        <tr>
+          <td>GBP/USD</td>
+          <td class="num">1.3391</td>
+          <td class="num up">+0.09%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:45</td>
+        </tr>
+      
+        <tr>
+          <td>USD/CNY</td>
+          <td class="num">6.6542</td>
+          <td class="num down">-0.10%</td>
+          <td class="num neutral" style="font-size:11px;">11-02 10:45</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">미국 국채</h3>
+    <table>
+      <tbody>
+      
+        <tr>
+          <td>5년물</td>
+          <td class="num">4.721%</td>
+          <td class="num down">-0.080p</td>
+          <td class="num neutral" style="font-size:11px;">10-31 03:55</td>
+        </tr>
+      
+        <tr>
+          <td>10년물</td>
+          <td class="num">4.929%</td>
+          <td class="num down">-0.060p</td>
+          <td class="num neutral" style="font-size:11px;">10-31 03:55</td>
+        </tr>
+      
+        <tr>
+          <td>30년물</td>
+          <td class="num">5.309%</td>
+          <td class="num down">-0.020p</td>
+          <td class="num neutral" style="font-size:11px;">10-31 03:55</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<h2 class="section-title" id="tech">02 기술적 지표</h2>
+
+<div class="grid-2">
+  <div class="panel">
+    <h3 style="margin-top:0;">S&P 500 섹터 등락률
+      <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 10-31 04:55</span>
+    </h3>
+    <table>
+      <tbody>
+      
+        <tr>
+          <td>에너지</td>
+          <td class="num up">+1.88%</td>
+        </tr>
+      
+        <tr>
+          <td>필수소비재</td>
+          <td class="num up">+1.41%</td>
+        </tr>
+      
+        <tr>
+          <td>유틸리티</td>
+          <td class="num up">+0.72%</td>
+        </tr>
+      
+        <tr>
+          <td>헬스케어</td>
+          <td class="num up">+0.47%</td>
+        </tr>
+      
+        <tr>
+          <td>소재</td>
+          <td class="num up">+0.42%</td>
+        </tr>
+      
+        <tr>
+          <td>부동산</td>
+          <td class="num up">+0.26%</td>
+        </tr>
+      
+        <tr>
+          <td>임의소비재</td>
+          <td class="num down">-0.70%</td>
+        </tr>
+      
+        <tr>
+          <td>금융</td>
+          <td class="num down">-0.72%</td>
+        </tr>
+      
+        <tr>
+          <td>커뮤니케이션</td>
+          <td class="num down">-1.28%</td>
+        </tr>
+      
+        <tr>
+          <td>산업재</td>
+          <td class="num down">-1.59%</td>
+        </tr>
+      
+        <tr>
+          <td>기술</td>
+          <td class="num down">-4.87%</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">VIX 기간구조
+      <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 10-31 05:10</span>
+    </h3>
+    <table>
+      <tbody>
+      
+        <tr>
+          <td>VIX 9D</td>
+          <td class="num">19.67</td>
+          <td class="num up">+23.94%</td>
+        </tr>
+      
+        <tr>
+          <td>VIX</td>
+          <td class="num">19.44</td>
+          <td class="num up">+13.02%</td>
+        </tr>
+      
+        <tr>
+          <td>VIX 3M</td>
+          <td class="num">20.91</td>
+          <td class="num up">+7.95%</td>
+        </tr>
+      
+        <tr>
+          <td>VIX 6M</td>
+          <td class="num">22.26</td>
+          <td class="num up">+4.80%</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid-2">
+  
+  <div class="panel">
+    <h3 style="margin-top:0;">시장 심리 — CNN Fear &amp; Greed
+      <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 2026-10-31 08:59</span>
+    </h3>
+    <table>
+      <tbody>
+        <tr><td>현재</td><td class="num"><strong style="font-size:18px;color:var(--text);">26.2</strong> · fear</td></tr>
+        <tr><td>전일 종가</td><td class="num">34.6</td></tr>
+        <tr><td>1주일 전</td><td class="num">16.7</td></tr>
+        <tr><td>1개월 전</td><td class="num">30.3</td></tr>
+      </tbody>
+    </table>
+    <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+      🔴 0–25 극단공포 · 26–44 공포 · 45–55 중립 · 56–75 탐욕 · 76–100 극단탐욕
+    </div>
+  </div>
+  
+  
+  <div class="panel">
+    <h3 style="margin-top:0;">시장 지표
+      <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 10-31 04:35</span>
+    </h3>
+    <table>
+      <tbody>
+        <tr>
+          <td>Baltic Dry (BDRY ETF)</td>
+          <td class="num">$12.31</td>
+          <td class="num down">-1.28%</td>
+          <td class="down">▼</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+      ※ BDRY ETF는 Baltic Dry Index를 추종하는 펀드로, 해운업황 프록시로 사용
+    </div>
+  </div>
+  
+</div>
+
+
+<div class="panel">
+  <h3 style="margin-top:0;">SPY 옵션 (만기: 2026-11-02)
+    <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 2026-11-02 10:46</span>
+  </h3>
+  <table>
+    <thead><tr><th>항목</th><th class="num">값</th></tr></thead>
+    <tbody>
+      <tr><td>SPY 현재가</td><td class="num">$755.72</td></tr>
+      <tr><td>Call 거래량</td><td class="num">718,770</td></tr>
+      <tr><td>Put 거래량</td><td class="num">897,837</td></tr>
+      <tr>
+        <td>P/C Volume Ratio</td>
+        <td class="num">
+          <strong>1.249</strong>
+          <span class="down">비관</span>
+          
+        </td>
+      </tr>
+      <tr><td>Max Pain Strike</td><td class="num"><strong>$772</strong></td></tr>
+    </tbody>
+  </table>
+  <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+    P/C Ratio: &lt;0.7 낙관 · 0.7–1.2 중립 · &gt;1.2 비관(헤지 수요) ※ SPY는 헤지 활용도가 높아 일반 P/C보다 상시 높게 형성<br>
+    Max Pain: 옵션 매도자(마켓메이커)의 총 지불액이 최소가 되는 만기 가격 — 주가가 이 방향으로 끌리는 경향 (±20% 범위로 산출)
+  </div>
+</div>
+
+
+<h2 class="section-title" id="calendar">03 예정 지표</h2>
+<div class="panel">
+  
+  <table>
+    <thead><tr><th>날짜</th><th>요일</th><th>시간(KST)</th><th>지표</th><th>주기</th></tr></thead>
+    <tbody>
+    
+      <tr>
+        <td>2026-11-04</td>
+        <td>수</td>
+        <td>03:00 (다음날)</td>
+        <td>FOMC 금리결정</td>
+        <td><span class="neutral">연 8회</span></td>
+      </tr>
+    
+      <tr>
+        <td>2026-11-05</td>
+        <td>목</td>
+        <td>21:30</td>
+        <td>미국 신규실업수당청구</td>
+        <td><span class="neutral">주간</span></td>
+      </tr>
+    
+      <tr>
+        <td>2026-11-12</td>
+        <td>목</td>
+        <td>21:30</td>
+        <td>미국 신규실업수당청구</td>
+        <td><span class="neutral">주간</span></td>
+      </tr>
+    
+    </tbody>
+  </table>
+  <div style="color:var(--muted);font-size:11px;margin-top:8px;">
+    ※ 향후 14일간 주요 미국 경제지표 (FOMC + 주간 신규실업수당청구) — 하드코딩된 일정. 추가 지표가 필요하면 collectors.py의 collect_econ_calendar() 확장.
+  </div>
+  
+</div>
+
+<h2 class="section-title" id="news">04 뉴스 헤드라인</h2>
+
+<div class="grid-2">
+  
+  <div class="panel">
+    <h3 style="margin-top:0;">산업종합
+      <span style="color:var(--muted);font-size:11px;font-weight:400;">· 5건 · 최근 3일</span>
+    </h3>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE5FN1ZJTHZtdnNZTWk1c01DVDFLYWtkVktrZzZfaWdPbU9wbmFnbEEtZ2JPM01EeHZieDl0bFZqamF5YV85UGtrUXRpX2U3bm9NU0JNYkgzaUJHNkxWcHN4TQ?oc=5" target="_blank">전세계 전기차용 배터리 시장 19.7% 성장…국내 3사 점유율↓ - 아시아경제</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:44:34 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiXEFVX3lxTE9mUFFKVURfTTlrVUNlMnJUMGJraTZQSnhBN3JWU1hwNHZTYmRpNVJFVWRQYkdCZUlCdGw4TkxpUWgwQnRJTmJmWlQ0NUc2UEVzNVNRdTdKQWs2SWdT?oc=5" target="_blank">삼기에너지솔루션즈, 美 DDP 사업용 드론 배터리팩 시제품 수주 - 뉴스핌</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:43:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiZEFVX3lxTE5mTTM3bnB2MHREX0ctMm1yWlp5S21XQ1JBVkxuVFRjbVVWOHF6bnd6cG9UaFNBNXNlWm1VNFFzanR5U3dOUjlsb0l5Y2lnMmJMLVo1NDd2bUVyZkZRMy14anVOR2k?oc=5" target="_blank">국산 AI반도체를 클라우드로…오픈케이클라우드, 10일 데브데이 개최 - 디지털데일리</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:41:52 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFBVNGIwSS13Sm9ucDl6WEs4RzV4bC1HdnRJXzd5NFkzbUktdGRwMHA2enM4WE1Remw1TEs5YnB6ME1Ta245Mk1sM1hlRTA0OTZ5NFVqTEtITkZkZzF5d2pHYXJXZ3k5aks3cnc?oc=5" target="_blank">철강, EU ‘산업가속화법’ 비상…정부·철강업계, 독일 고리로 통상 총력전 - 철강금속신문</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:39:32 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTFA1MGY2VE52dDhhMnZHNnVCNllJVWt5SEFSSnNBemRPZjZtX1dYODRkWkZFVlNNSWVhblpWNWFFRGFNMDJUWEQ3OTFhS0NmenoydEV4M2lvTFRjaVRWdGI2VlhCMXRlRDA?oc=5" target="_blank">[속보] 이 대통령 “반도체 등 ’3대 메가’ 미래성장동력 과감히 투자“ - 연합뉴스TV</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:35:00 GMT</div>
+      </div>
+    
+  </div>
+  
+  <div class="panel">
+    <h3 style="margin-top:0;">M&A
+      <span style="color:var(--muted);font-size:11px;font-weight:400;">· 5건 · 최근 3일</span>
+    </h3>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9kUEhWMGhzYnp6UmZpNEtrd0RYREhVN1dQRjNQM0R2Uk1JaGkxbTNYNzROU0hNSEh6NkVGUEpTemtoRVFHcnl5VmlveWd2cVQzREZoM01zTjI3VTFlalBWdEhvYXVUTnc?oc=5" target="_blank">엔비디아 네이버 지분 4.54% 눈앞…이해진 의장 넘어 - 자본시장뉴스</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:30:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMib0FVX3lxTFBVd3ZScl9FSTF2cE1kTXBlajRYd1c0UHVWVmF4TUZfQS1EQnZZSmFFS1NSNlUxRzZ1Rlc1VmJCZ3BjYzk3cmJ3VGlKTmJLamFoR3REYVZuOGNOU1BhX21UTEFaemd0SFlVbl9pNE1qZ9IBc0FVX3lxTE9ld2dlWmx5WERyaDNKam54T2x4SUV2SWlveng0TzVZVl94ZUhraDduLTdMaFdveUx3U0hSNWxOWGx0N2lSZFdWMTdtRTVvSEJSQThnU2dyQW1RamdTandoSTVwdnlNREdpaE9nSGM4OFdsR28?oc=5" target="_blank">'편법 승계’ 논란 속 지휘봉 쥔 다우키움 2세 김동준…M&A 승부수 [재계 후계자들] - 시사저널</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:00:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFA0SkVyeU9nNVU3djZhdy12RUhMT3lfY3F6cWdWODdLSUE3NUUzcmVwLUVoVGZHYmhRLWJCbXBoeWZyTExnQVRiZXlGU0p6SHhSWkx5QUpMNGxhTU9ZV1JNUHRzLWNUdGdU?oc=5" target="_blank">[이준호의 N잡러칼럼] M&A혁신전략(1), 잘나가던 브랜드는 왜 무너지는가?, 카테고리 선두의 역설, CEO의 착각과 기업의 생존전략 - 경인매일</a>
+        <div class="news-meta">Mon, 02 Nov 2026 00:57:57 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTFBoUnZwVjNXTEZmbXlWRXhoMXlCal9hclVkdU5FTHZWVENoc2xoV3YwRmhseFR6d2Z0MlA5akUwZW5VaWRxdkg3bHNJbVBtamRUSC1WLVVlV3E1UQ?oc=5" target="_blank">포렌식으로 지분가치 0원 입증…M&A 매매대금 전액 돌려받아 - 한국경제</a>
+        <div class="news-meta">Mon, 02 Nov 2026 00:42:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTFBuMWNfQ3h6VXJGR3R0UEI1YmhaT2E3TXdQdzVqUGFCek9RMkVKOTNHUFppU0tYVHZ0MXNaZGpVOWx0V1hlclRkelE3ZlhOZS1sQlBUX3RjRnZ6b3dJS0VBLVB3?oc=5" target="_blank">日·中 찍은 박현주, 글로벌 M&A 승부수…미래에셋 다음 전략은? - 이코노미스트</a>
+        <div class="news-meta">Mon, 02 Nov 2026 00:01:47 GMT</div>
+      </div>
+    
+  </div>
+  
+  <div class="panel">
+    <h3 style="margin-top:0;">보험사
+      <span style="color:var(--muted);font-size:11px;font-weight:400;">· 5건 · 최근 3일</span>
+    </h3>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE55WmVTMkFZUnNtSG15WDFyTDFIOXN5SFVlUWlZWkl3U1BSeXQxWFE4MmRpeld6eGRmd1lsbTRDcXhpYWNHTnRkTHV0eHQyelRTbFUyc2RHdEk0VzNCMy1ZRkkzdTFRWXNWU09Z?oc=5" target="_blank">현대해상, '트래블패스365 해외여행보험' 출시 - 보험신보</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:37:58 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE1pNFc3RTBfdlZiTkVGZHRPWnN0Z2FFeE5NNDJmRVFSdGhUd3M3MzFMc0I3LV9WSHpwNHEya0FLTGNkZDBPZWlNNHJPVzlHOGdubVlGalctbDRhbFJMZlVIU25Jb0FYeUx3Z3RN?oc=5" target="_blank">한화손해보험, 교직원 특화 상품 '교직원 전용 플랜' 출시 - 보험신보</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:37:58 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE1Lb1dHT202Zmo4cmpLdHQ3c2FmRzYzRDZnX0NCbjI4M3pacjFjeEVHaFN5TGdyTWtWZDN6TlNPQktsZzBfcEdqbTBTaS01b29iaFF0SUNvSV9jQjBQTlZqTHZlMzdKaGhCS2xpaW1n0gFyQVVfeXFMT2p6TUlaNVZsU2t3VTJreEpISHQ5TWdLbDFtamg1aUFnS29ieUdFdWFxODgxSDJfUDlIVmdCcDBINnVDX0huYkxZV1VZdGhIaEEtYWFSV0ZWR3FZcHVueUVIcE9rMUQ3N0o3NktLdzdQVEN3?oc=5" target="_blank">하나손해보험, 치매 검사부터 장기요양까지 보장하는 보험 선봬 - 팝콘뉴스</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:36:37 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMic0FVX3lxTE5uUmRGQldsb3AtMXk2S2RXSDd2TnNSQXRETmJjXzY2VWpHcVFNOVNWY3NucW9UYVpZdzdJbmJZYjZNT3Jkd01TdFFqZXBGUldPSFZGYVB2Q2RhNkx5UFBZSUZUVTg2MnZnMDJsTkhCZi13RGc?oc=5" target="_blank">[이슈] 손보사 15곳 중 DB손보만 '우수'...보험약관 평가 최고등급 - 오늘경제</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:29:25 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE1ESkZscHFXa0J2Y3JuZjFSQnJzQ1ZiSnBtaGNpSTU1R0FDOU9hcnpWOVhfXzU5c3lUUHZNTUlIdUZOcXB2d2F3d051VDNDUGYyVlpMSkdQODRLaEVwUzlwX1Rn?oc=5" target="_blank">대한암협회·한화생명, 암경험청년과 가족이 함께 뛴 ‘위케어리셋 크루 운동회’ 개최 - 충북데일리</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:29:02 GMT</div>
+      </div>
+    
+  </div>
+  
+  <div class="panel">
+    <h3 style="margin-top:0;">한화그룹
+      <span style="color:var(--muted);font-size:11px;font-weight:400;">· 5건 · 최근 3일</span>
+    </h3>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMib0FVX3lxTE1Wb2Y5REpZdk9IbEc2ZndINXdVd2FuQllVb3NYa0Vta1JBT2NDSDZac211bFo4VEVlOTdyUXJkMzFhbEpVMzAwWnF1SnFOOTQ4TENHR29ocWloY0dBZmY4RkVQN3M1eXFvLWV5eWotdw?oc=5" target="_blank">한화생명 등 금융사 5곳 '저PBR 기업' 공표…밸류업 압박 커진다 - 뉴스톱</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:07:28 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE56NG12dUR1MkxLUXVsTjdGdUdEWDVJYnNXLXQzbnUxellkdkNuZDhBeXBsajg2YnJqVFJpTnZWZlBzMWoyZmRSZkI5OEV3SldSVEFxcEhrdmZTTVlnbVNvTXQ1ZDlXcFowVWJETXpR?oc=5" target="_blank">한화생명·손보·증권·자산운용, ‘500조 퇴직연금 시장’ 공략 속도 - 아시아투데이</a>
+        <div class="news-meta">Mon, 02 Nov 2026 00:30:47 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxORDVsSGVfVGRvNzdkRDhGRHM2UVZCbjdRNW90VUdwZGZKSmFSd0JFNVdFbGo5eTV2Z25KOWg5dDlSOVZnSGVLamQ4aUd2ZllIWWdGYjJGbzNodmZGZFg2cWVSV21SNkZzSHhORGFCMS1xQ2NYYXhSbjhHbWxEUXR0eU1KUjnSAZgBQVVfeXFMT2d2d2FlT3EwUmpTM2NHWENtb0ZrRmN0SDU4UW1qT2Q5XzFpOWZhMll2RG0zcjNIZVRMM2IzUWJhbjJHcHl3NkJxVDBqMU9QOTNxLVQ5Z2VNVHo1VXBwRjZsZEZpMVhCVFZUSm5qZzN3T3dfN0hTUUU1Tm9rVWhtQUVBd3pCVTAxYVVjbWkwV21rMEpQWGR1WEY?oc=5" target="_blank">한화시스템, 조종석형 함교체계 국산화… “2명이 함정 운용” - Chosunbiz</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:39:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTFBidmlLSXhTQV82ZjMzU0txMVVjVDE4MlB3REw0RjFVLXA5T181cHhGbmpHVW9LNklKRDZqMVRRMkJGdjJINTFENzlaZzZHUDBHbGxtVHJPZm5nck1LMGozTGZB?oc=5" target="_blank">한화오션, `잠수함 수평발사장치` 국산화 소식에 10%대 급등 - 매일신문</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:34:52 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE1BcWdIdlBKa3dzaVRmeGdtN1VhYzJBTEhWbEFBN0htZThndVJ5d0RyNWc5dkFaS3NJbUZhT2Z5ZUpleXRuWFp4RXF5WTlodERMeThLQkZaWm80SU92bHp5bzZZd01mb2JpazAzaQ?oc=5" target="_blank">한화오션, 어뢰 수평발사장치 국산화 잠수함 국산화율 80% 넘겼다 - 중소기업신문</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:32:32 GMT</div>
+      </div>
+    
+  </div>
+  
+  <div class="panel">
+    <h3 style="margin-top:0;">해외운용사
+      <span style="color:var(--muted);font-size:11px;font-weight:400;">· 5건 · 최근 3일</span>
+    </h3>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMirgFBVV95cUxOV0Z5YkVOOFhlZEExcm40XzVDandMc0pNVWdzTlNuWDloVENzNDlKLXhheG5vaFVVWmpPN1ZldWJzUDVHa1ZMU29FZTkzaVdwTTJNSncwQnRlMjBVVnlvX2xnUXpfa0NMUTBBYS1mQzNFT1RkaHlQNTVmakxCcVJvRlNqU0YyRzBFMjZfR3VHaU40MkcyY09BZHplUGNUeFFXck9TR1I3SmgydkY4Nnc?oc=5" target="_blank">Here's What $5,000 in Vanguard's Tech ETF Could Be Worth by 2030 - The Motley Fool</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:37:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiygFBVV95cUxOUjJveDJfUlIxS1Z4R0JDeHJKYkRMazFnQVVnTXlyR3doQW1DTHNmeWlsRFdqZUZCUlp2Q0I1Tl9qV20xblZYdXpwN0QwTV9tSEt4VTEwRHdxWXIwR0JmNlJ6U2JoSFVLajRsd0I0aVREUlpEazFXUTQ3NHNyb1M0SEdvWXIxS3Y2a0ZpYkE1X2tHakpza09UZlIzX3NzdkpYRURfZFNCSVFHaEFRelFubHNHVlh6Q0NZaXFuYXhFTGl2ek9oUXRpSnpB?oc=5" target="_blank">Fidelity India Active ETF Releases Product Disclosure Statement for ASX-Listed Fund - Kalkine Media</a>
+        <div class="news-meta">Mon, 02 Nov 2026 01:14:46 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxOSXpiSnlCX0MtTXR1TmNHTXBmMG1jOWVpcjVRNHhkaHRnSE42dHRnb1R2MjVkZ3hYNlhIOVJEaGozUGxMZGR1bVBBVEw2U1QtZ0tMdzRjU0x6N2xNWk1qcHpYM2VLam1vaEhoQy1HcFpSQno1R2RYdVF0SUkzd0VaR1VZQ2FOYW5LeDRDakRqSUdXcHlWbGhEN0xVeEc2TE4zbVFKS1hRUURDbldmWDU0aA?oc=5" target="_blank">Fidelity Asia Active ETF Issues Version 2 Target Market Determination - Kalkine</a>
+        <div class="news-meta">Sun, 01 Nov 2026 23:15:03 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNOVFfVVpvendHSDdfQzRSMThlQ0daRkxRVXJhNE8xbjV4TFVTdDQxNVlfcWszU0hFSkRTeUpSVlZoX05Eb0ZieTVpVnJKTURHTExYYTQ4bklJOHZERGNMemJzZmpIS0d0OWJqZ1BMN3VvdVNhRkhPYnpKTzhiRFc2VzBuQ0Y1NmU4eDI0elNHU1BHZmRGRnUtTS1ZME90UmJnM3dZU3ZLNnVuMVoza1plazBBQllVcGh0WmxJQjh1NV9kbUdxN1FzTnVJSElRSDVEdUE?oc=5" target="_blank">Fidelity Global Future Leaders Active ETF Issues Updated Target Market Determination Version 2 - Kalkine</a>
+        <div class="news-meta">Sun, 01 Nov 2026 23:15:03 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMi2AFBVV95cUxOQ3E2OFZyZFJSVm5kTW5iVWQ4MEhoSm9kdVMwVi1NRG5fSzZWbE8zOXBPSFlmUHVrRGN2Z0doQmxzN2JFc2JKTW1WTDNIemozT0xBNWwtVDVrS04xQUxlRUhWUGNtd1B1d3kwMHNueFJURXNBQi1nREt2VmE5b0ZlQ0x1Q3VaQzdiU0hGbXZZRW1qYXdmb1dPUFJvME9QWmUwNUhhNHZYdTZod1FtNmFJazhCLXZtV0Q1empDcVUtWU41YVRSLTdubEp1SU1wSmdxMmtTYWN2RFc?oc=5" target="_blank">Fidelity Global Future Leaders Active ETF Issues Product Disclosure Statement Dated 2 November 2026 - Kalkine</a>
+        <div class="news-meta">Sun, 01 Nov 2026 23:15:03 GMT</div>
+      </div>
+    
+  </div>
+  
+</div>
+
+<footer>
+  글로벌 마켓 대시보드 · 데이터 페치: 2026-11-02 10:46:23 (KST)
+  · Sources: Yahoo Finance (~15분 지연), Naver Finance, CNN, Google News RSS · Powered by Claude
+  · 수동 갱신 모드 — 자동 새로고침 비활성
+</footer>
+
+</div>
+</body>
+</html>
