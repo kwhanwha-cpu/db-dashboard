@@ -108,7 +108,7 @@
   <h1>📊 글로벌 마켓 대시보드</h1>
   <div class="subtitle">
     <span style="color:var(--accent);font-weight:500;">2026년 11월 07일 (토)</span>
-    · 데이터 페치: <strong style="color:#fff;">2026-11-07 07:20:48 KST</strong>
+    · 데이터 페치: <strong style="color:#fff;">2026-11-07 11:19:29 KST</strong>
     · <span id="staleness" style="color:var(--muted);"></span>
   </div>
   <div class="market-status-bar">
@@ -152,7 +152,7 @@
 
 <script>
 (function() {
-  var fetched = new Date("2026-11-07T07:20:48.862937+09:00");
+  var fetched = new Date("2026-11-07T11:19:29.773148+09:00");
   var el = document.getElementById('staleness');
   if (!el) return;
   function update() {
@@ -188,7 +188,7 @@
 <div class="panel">
   <h3 style="margin-top:0;color:#fff;">📴 글로벌 시장 모두 마감 — 최근 마감값 기준</h3>
   
-    <div class="summary-card"><strong>증시</strong> 📴 현재 거래 중인 글로벌 시장이 없음. 아래는 최근 거래일 마감값 — S&P500 +0.29% · KOSPI -6.02% · NIKKEI -6.00% — 혼조</div>
+    <div class="summary-card"><strong>증시</strong> 📴 현재 거래 중인 글로벌 시장이 없음. 아래는 최근 거래일 마감값 — S&P500 +0.29% · KOSPI -5.24% · NIKKEI -6.00% — 혼조</div>
     <div class="summary-card"><strong>환율</strong> USD/KRW 1,363.65 (+1.76%), EUR/USD 1.1143 (-0.82%).</div>
     <div class="summary-card"><strong>금리</strong> 미 10Y 4.859% (+2.2p).</div>
   
@@ -213,8 +213,8 @@
   
     <div class="theme">
       <span class="cat">수급</span>
-      <h3>SPY P/C Ratio 1.049 — 중립</h3>
-      <p>SPY 옵션 거래량 기준 P/C Ratio가 1.049로 중립을 시사합니다. Max Pain은 $745로, 현재가 $735 대비 +9.7달러 격차가 있어 옵션 만기(2026-11-06)까지의 단기 자석 효과를 주시할 만합니다.</p>
+      <h3>SPY P/C Ratio 1.420 — 비관적 (풋 쏠림, 헤지 수요 증가)</h3>
+      <p>SPY 옵션 거래량 기준 P/C Ratio가 1.420로 비관적 (풋 쏠림, 헤지 수요 증가)을 시사합니다. Max Pain은 $750로, 현재가 $735 대비 +14.7달러 격차가 있어 옵션 만기(2026-11-09)까지의 단기 자석 효과를 주시할 만합니다.</p>
     </div>
   
     <div class="theme">
@@ -231,11 +231,6 @@
   <h3 style="margin-top:0;">주요 지수
     <span style="color:var(--muted);font-size:12px;font-weight:400;">(기준 시각은 한국시간(KST))</span>
     
-    <span style="background:rgba(63,185,80,0.15);color:var(--up);border:1px solid rgba(63,185,80,0.3);
-                 font-size:11px;padding:2px 8px;border-radius:3px;margin-left:8px;">
-      🔴 LIVE (한국투자증권 OpenAPI)
-    </span>
-    
   </h3>
   <table>
     <thead><tr><th>지수</th><th class="num">현재</th><th class="num">변동</th><th class="num">변동%</th><th>방향</th><th class="num">기준(KST)</th></tr></thead>
@@ -244,25 +239,25 @@
       <tr>
         <td>
           KOSPI
-          <span style="color:var(--up);font-size:10px;">🔴</span>
+          
         </td>
-        <td class="num">5,059.69</td>
-        <td class="num down">-324.11</td>
-        <td class="num down">-6.02%</td>
+        <td class="num">5,101.44</td>
+        <td class="num down">-282.36</td>
+        <td class="num down">-5.24%</td>
         <td class="down">▼</td>
-        <td class="num neutral" style="font-size:12px;">11-07 07:20</td>
+        <td class="num neutral" style="font-size:12px;">11-06 14:55</td>
       </tr>
     
       <tr>
         <td>
           KOSDAQ
-          <span style="color:var(--up);font-size:10px;">🔴</span>
+          
         </td>
-        <td class="num">644.27</td>
-        <td class="num down">-34.14</td>
-        <td class="num down">-5.03%</td>
+        <td class="num">649.94</td>
+        <td class="num down">-28.47</td>
+        <td class="num down">-4.20%</td>
         <td class="down">▼</td>
-        <td class="num neutral" style="font-size:12px;">11-07 07:20</td>
+        <td class="num neutral" style="font-size:12px;">11-06 14:55</td>
       </tr>
     
       <tr>
@@ -423,16 +418,16 @@
       
         <tr>
           <td>비트코인 (BTC)</td>
-          <td class="num">$75,920</td>
-          <td class="num down">-0.03%</td>
-          <td class="num neutral" style="font-size:11px;">11-07 07:20</td>
+          <td class="num">$75,976</td>
+          <td class="num up">+0.04%</td>
+          <td class="num neutral" style="font-size:11px;">11-07 11:15</td>
         </tr>
       
         <tr>
           <td>이더리움 (ETH)</td>
-          <td class="num">$2,238</td>
-          <td class="num up">+0.14%</td>
-          <td class="num neutral" style="font-size:11px;">11-07 07:20</td>
+          <td class="num">$2,246</td>
+          <td class="num up">+0.51%</td>
+          <td class="num neutral" style="font-size:11px;">11-07 11:15</td>
         </tr>
       
       </tbody>
@@ -457,7 +452,7 @@
           <td>EUR/USD</td>
           <td class="num">1.1143</td>
           <td class="num down">-0.82%</td>
-          <td class="num neutral" style="font-size:11px;">11-07 07:20</td>
+          <td class="num neutral" style="font-size:11px;">11-07 07:25</td>
         </tr>
       
         <tr>
@@ -471,7 +466,7 @@
           <td>GBP/USD</td>
           <td class="num">1.3356</td>
           <td class="num down">-0.90%</td>
-          <td class="num neutral" style="font-size:11px;">11-07 07:20</td>
+          <td class="num neutral" style="font-size:11px;">11-07 07:25</td>
         </tr>
       
         <tr>
@@ -625,7 +620,7 @@
   
   <div class="panel">
     <h3 style="margin-top:0;">시장 심리 — CNN Fear &amp; Greed
-      <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 2026-11-07 07:04</span>
+      <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 2026-11-07 08:59</span>
     </h3>
     <table>
       <tbody>
@@ -664,23 +659,24 @@
 
 
 <div class="panel">
-  <h3 style="margin-top:0;">SPY 옵션 (만기: 2026-11-06)
-    <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 2026-11-07 07:21</span>
+  <h3 style="margin-top:0;">SPY 옵션 (만기: 2026-11-09)
+    <span style="color:var(--muted);font-size:12px;font-weight:400;">· 기준(KST): 2026-11-07 11:19</span>
   </h3>
   <table>
     <thead><tr><th>항목</th><th class="num">값</th></tr></thead>
     <tbody>
       <tr><td>SPY 현재가</td><td class="num">$735.29</td></tr>
-      <tr><td>Call 거래량</td><td class="num">4,082,934</td></tr>
-      <tr><td>Put 거래량</td><td class="num">4,284,741</td></tr>
+      <tr><td>Call 거래량</td><td class="num">158,217</td></tr>
+      <tr><td>Put 거래량</td><td class="num">224,730</td></tr>
       <tr>
         <td>P/C Volume Ratio</td>
         <td class="num">
-          <strong>1.049</strong>
-          <span class="neutral">중립</span>
+          <strong>1.42</strong>
+          <span class="down">비관</span>
+          
         </td>
       </tr>
-      <tr><td>Max Pain Strike</td><td class="num"><strong>$745</strong></td></tr>
+      <tr><td>Max Pain Strike</td><td class="num"><strong>$750</strong></td></tr>
     </tbody>
   </table>
   <div style="color:var(--muted);font-size:11px;margin-top:8px;">
@@ -731,28 +727,28 @@
     </h3>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFAxel85SHVCTjl5RnVjVlIzcHlzNTEyVEdrM2FSd1RVcENfdEV6ZjUtbFM5VVNfbzJMSmtVX1M2MjM5bTUxZ0FGZWRVRDlfaWF0MWVjQl9PM3liQ2RseWQ3MVpfb3R3ek9lTUE?oc=5" target="_blank">반도체 팔고 배터리 갈아탈까···중간선거發 '계좌 리밸런싱'의 함정 - 뉴스웨이</a>
-        <div class="news-meta">Fri, 06 Nov 2026 22:07:02 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE9YbzQxekpqUzlUNUMzaFVYX1RYN1BQMnBHMk9UX3lXakRKa2tiYTkxV3d6alRIOEdSaENRbHVTQ1YySlNINFg3TjVBOURQaVJh?oc=5" target="_blank">삼성·SK ‘반도체 잭팟’…경기 지자체 세수 최대 12배 폭증 - 문화일보</a>
+        <div class="news-meta">Sat, 07 Nov 2026 02:04:23 GMT</div>
       </div>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE8wbTBxSmpqdE5NWkp2WHhWYUo0Q21YeEVRSG5iQVJLZ0RXSFpTUXhBREhuOEZXMWFYX25GT19PbWxmcXA3VGN4dEIxdGVVYnVMRUxtekZyWl9DTTdOa2VjQm93TGI1Qm5neGJR0gFvQVVfeXFMT280QWhMYW9xQkxZcGpMUEk5VFMwSEpmXzNmWHNDS3ZjajhmY0JIOWVlc29NWWZ3eUJvMWZpVnFrYUlzRGh0VHpPcnhYcTF4cFRBa016U1NBa3c5Q1FVYjJNb1prQVNuN29XR01TQm1N?oc=5" target="_blank">美 증시, 하루 만에 반발 매수···반도체 4.2% 반등 속 '혼조 마감' - 글로벌E</a>
-        <div class="news-meta">Fri, 06 Nov 2026 22:00:53 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE9sbnF3OThsRUpBSmxQbDVYaUU1eGpkWUtza3ZiaXJrbXpldk5rblQyLXdRdGJ6SjNuYkdGMC02MC0wVkNUT3VkMVF1OVE4VWVBd0ZfR2FR?oc=5" target="_blank">“이 숫자를 봐라 … 반도체 투자 둔화기에 메모리가 가장 먼저 꺾인다” - 매일경제</a>
+        <div class="news-meta">Sat, 07 Nov 2026 02:01:00 GMT</div>
       </div>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMickFVX3lxTE43cG5IVVY5WHR0ZXgtTDE1aHNVMjAyQzMxUzc4eW1QRkxzT04xNGFGNFZ6ZnVIcFNCZDhVbzg3WWNHVzA0aFNzNDNXU1RUVjZIbkRwLUlydUEyYjk3TjF4Y19MQ2lMRW0ybUtybkFtZjRjd9IBdkFVX3lxTFBmdW1UNWFZaDBlQlFKaFpFVDIyNlZzakZHZDRLVlVfUUZrdmRRQTJ3UnhvVmNMU2VFRnlRQVVJc2VPY1R0UFZ6ZVpiTWJhdWZXU0c3bVFkSTU5MHI2d0F0SW1XcU5VYTdNdmZXOEl5M1QyY2FGWmc?oc=5" target="_blank">세명소프트, 반도체 특화 AI 기술개발 확대···세메스와 제조안전 실증 - 시사저널e</a>
-        <div class="news-meta">Fri, 06 Nov 2026 22:00:00 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTFBFQ2NfQ1lGNHQ3akJGaV9VVXNDYXlvWmNKdEF6cUdCTUVoMUcxbnlIcWxBNVc2ZzN2WlBGc2szcDBVZkw2UWlDZnlFYWY?oc=5" target="_blank">[박근종 칼럼] 사상 최대 600억 달러 흑자, ‘반도체 착시’를 경계하고 투자 선순환 구조 구축해야 - 시사일보</a>
+        <div class="news-meta">Sat, 07 Nov 2026 01:58:00 GMT</div>
       </div>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE02aWhwaE1TRGlJNHRoeC1ORVBkeVpoZEZwNU1XaExNbEVuV1JXa1BGQU1oakNWd2dEN3VKSWVxdmxtMHpvbk9qb3ZzbTA0c21XT09mSW5rX2JubktLZi1uYzdVN1lCaGVT?oc=5" target="_blank">우태희 효성중공업 대표, 글로벌품질경영인대상 수상 - FETV</a>
-        <div class="news-meta">Fri, 06 Nov 2026 22:00:00 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTFAtZ2tKSG5nT3NOS2RDbGYzeUc0dTVTSlBzNGdrM19jRHl3bkpxa3RHRFJGN3JwWFhCOG9xbjFvRVF6X0lWcDgxYkdnbFU5VXRsWFllSUh6SFBLZE1MMXhxeF9UVnpFZzVzLUZXMg?oc=5" target="_blank">AI 악재에 코스피 또 급락…반도체 쏠림에 취약성 부각 - 스페셜경제</a>
+        <div class="news-meta">Sat, 07 Nov 2026 01:56:29 GMT</div>
       </div>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMic0FVX3lxTE9VSjZCUlllMEdVSXQ4V3MtU0Z6Z29TSkRvUVdyenBMNlpYWTY4WFhIdmxQblJQT0dCZm9QSklhNlc4NnI5VXpRVGZ4TU5GSUpkUGZEUldPczBmeVVuYlVINDZiNEhKTDNRRWRVU0I5bmRNeG_SAXdBVV95cUxOVUNFcXdQRExZcDZSZkhlWVVYN0ZXZHB6YXh1ejlRQ3F6MXBHbjZPbmxrbjhHVmdwc3hLQmcwVHFFX0xXMnE2aWhMVWxYMDdCZWJWOFpsdFR2aElnRDh6SWdNZVN2TUphSXRNdUtXSDduTjVxU3VCYw?oc=5" target="_blank">반도체 ETF 일제히 환호성…SOXL·SMH·SOXX 강세에 기술주 반등랠리 - 핀포인트뉴스</a>
-        <div class="news-meta">Fri, 06 Nov 2026 21:52:22 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE5CMmxwUWxLaUVlNUNDaVZONEI5NWNCNFl6djd5bmlUYmJYVHBUa2t3MGljeTVEbU9RZXRvTTgwcHRvTG1HUU5Zb3p0Y05LNmhFaTJZV2EzYkE2WEh2U3FfMnBSeWhTZGs5eTBRNg?oc=5" target="_blank">반도체 산업 교육의 매력을 높여야 합니다. - Vietnam.vn</a>
+        <div class="news-meta">Sat, 07 Nov 2026 01:49:24 GMT</div>
       </div>
     
   </div>
@@ -773,18 +769,18 @@
       </div>
     
       <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1HeHBVbGM4Q3B0SE9YXzV0aDN2a0JBYmpJN19Vb3ZoeC05MF85bXQ1eEt1ZGt4eV9LN1plcjlVVlF3bW1xbnJYY3Z2WV95T0h2SU9pLUFRYU4zQ1pHNlp4UGgzcW5YQWM?oc=5" target="_blank">비싼 물 잘 팔리는 프리모, 이익률은 되레 뒷걸음 - 자본시장뉴스</a>
+        <div class="news-meta">Sat, 07 Nov 2026 02:00:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE5iaGZtbUZXbU5uS3pONU9rN1hlQjNxSzA4Z3FaWEI5U0NTVXlJYllWbUc2VGt2NUZkR3lER2I3eU41dG1Wa0NvVXBIbEo5Ym9zVWJ1WTF30gFbQVVfeXFMTm1NeTd4Y19FR1p0dlpSRmIzbGVndmg5RXV3TjVYdzlKS1NmWHVSdTVDU3M3WElOSW12cEtRdTVjbHFaOXlKTkx4b2YyVUhDZVNiNDByZk1hdXJLTQ?oc=5" target="_blank">나스닥100 5일 6.4% 하락…ING, 데이터센터 대출 매각 추진 - 토큰포스트</a>
+        <div class="news-meta">Fri, 06 Nov 2026 15:05:00 GMT</div>
+      </div>
+    
+      <div class="news-item">
         <a href="https://news.google.com/rss/articles/CBMic0FVX3lxTE5tUFRsb2VxZDNyRkpWVExUc2xFX0JLVm82amN1alMwRVZzZnQyQnBLeXplRlhVUEtBUDRkN2s4bl9MUkZhcGN3ZXBURGF5Vmo4aGNybzNoSEhtRWZrY2Zzb2NtRGo2OU8tN0JMM09MU0h2WlE?oc=5" target="_blank">실바모, 유럽 사업 매각 추진…마이더스 아틀란틱과 푸트옵션 계약 체결 예정 - 데이터투자</a>
         <div class="news-meta">Fri, 06 Nov 2026 11:12:20 GMT</div>
-      </div>
-    
-      <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBRckc0eDBGNnV6RDEtSTNYSG5aVnZ5Z0N1cUlFNmtSUnpnWXpiTmpZc3dDQ0h1eDdRcXJPa3Y5djhwSVROS2RqLU1rZWtpdTJVc1I0U1NlRF9JLXJfNGJ3bXp1MFJBLVU?oc=5" target="_blank">AI 데이터센터 투자에 경고등…ING, 5억 달러 대출채권 매각 추진·오라클 스타게이트 전력 공급 차질 - 인공지능신문</a>
-        <div class="news-meta">Fri, 06 Nov 2026 09:26:38 GMT</div>
-      </div>
-    
-      <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE5GMjh0Z0NfMzJJb1R1SWtqbUlkVlRtQUZxUjdmTUV4dmx0T2NWVEVhazhRR0ZwMHQ2TldXa0tSdUFGV1M4cUgyVERrQ2ZGX0JyOUZqM2NCNUVwVjJQSnBacnRUMmpuWlZC0gFsQVVfeXFMUHlrR1RqaTEwN0xFOHU2WXdtQlFWS1pfdF9BRlI3QlBGZDI1a2RxVEhURmk4V0ZSbVYteTBRazRsbmozTS1FdVR6UWZYQzV2cEUxWG4tX196VTBtWUhnRl9xNDQxbmRNYzJfV2x4?oc=5" target="_blank">F&F의 테일러메이드 셈법…값 오르면 펀드 회수액 커진다 - 블로터</a>
-        <div class="news-meta">Fri, 06 Nov 2026 08:44:48 GMT</div>
       </div>
     
   </div>
@@ -793,6 +789,11 @@
     <h3 style="margin-top:0;">보험사
       <span style="color:var(--muted);font-size:11px;font-weight:400;">· 5건 · 최근 3일</span>
     </h3>
+    
+      <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE1ZZmF1YktReUJzbkJMaloxaVd0elVUSzRLSzc5aVdsSVFlNzMySFZTdlh0OFBvUllJQVUzTXRnRU00MVU1RWd6SWU1b2R6aFgzMWxtbDNsZV9rV1RUQkJySNIBeEFVX3lxTE55RkJvOUtQRldBMEhRNXFUTkJhSlB2QTF2WWR2VHFRMGdkbHNpUFFSM0pzYkNmR2FxTDlwV21nNVN5TS1OMHZLUEdDT1ZvN1hSUTY5b2JxQ20wM01yb3ZfVnhjclpqOHM1MGNCSWRLazU3QzM3M0tDNQ?oc=5" target="_blank">한화생명 "달라진 종신보험, 2030 관심 쑥…가입 비중 31%" - 뉴시스</a>
+        <div class="news-meta">Sat, 07 Nov 2026 01:00:00 GMT</div>
+      </div>
     
       <div class="news-item">
         <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFB1MHhXVUdEVy1xQWpycXdGcWIzY2YwcTZVODFrREkyaHFmWDYwVy13azUzdFYwWTZBWVNqbU9XRDVQa2ZZV0ZMX1p3Z2F5VHpuc1ViSkt0REJxV2dNQlJ6bDl0OUJoUVNS?oc=5" target="_blank">[이달의 신상품] 현대해상, ‘트래블패스’ 출시…1년 무제한 보장 - FETV</a>
@@ -814,11 +815,6 @@
         <div class="news-meta">Fri, 06 Nov 2026 12:08:29 GMT</div>
       </div>
     
-      <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE93dkRrcDZVWGRJczgydVVxR1AyYThYaktWdWF3RF9jcUNVODZXVGJJMklfVXQwbG5rWE4zN21NYXlfV1A4cng3bm04VnFJeFU?oc=5" target="_blank">롯데손해보험 · 조윈, 업무협약 체결 - 뉴스N연합</a>
-        <div class="news-meta">Fri, 06 Nov 2026 11:01:04 GMT</div>
-      </div>
-    
   </div>
   
   <div class="panel">
@@ -832,8 +828,8 @@
       </div>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTFBEYkowRUgzVVJBeWl4b1BFS0V1TEFOekx6bnlmLXhiM0ZiSGVhTDRYV0VRV1ljck5CbUNxMVNjQTNsTC1ZbGFrdDZjM08xSGRGUUFrcUhYRklsQVVXalBNT0IzQWwtTHdXcDBucw?oc=5" target="_blank">‘김동원 체제’ 한화생명, 국내 첫 베트남 생보사 진출 17년차 성적은? - 인사이드비나</a>
-        <div class="news-meta">Fri, 06 Nov 2026 09:08:46 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE94eGE1UC1GUTBISHdoNUpObFhsMGsydExrYWJab3AwRHJvVWR1cEpMem1sUjhpM2RfZDN5SzRISkdUY3EwTlNNRnRLcERSY3dtOS1V0gFYQVVfeXFMT25pUE85YUVCZGZMM2lkcmN2M1dlVzZlTFhaV2RUY243N3VYZl9IenpyNnBvWFNvTlNNRXp6LVViNXB0TnhVT25qakJkNUxkZDRSTmJ1WXp3dw?oc=5" target="_blank">한화생명, 설계사용 'AI 비서' 도입…생·손보사 전방위 확산 - SBS Biz</a>
+        <div class="news-meta">Fri, 06 Nov 2026 23:00:00 GMT</div>
       </div>
     
       <div class="news-item">
@@ -859,6 +855,11 @@
     </h3>
     
       <div class="news-item">
+        <a href="https://news.google.com/rss/articles/CBMi2gFBVV95cUxOWXUxdmJXajRaWFZnMWlOXzNtS2pqV1R3eTA4eDNQdmQwN0VGVktZWTRGWFpYWXNHal9VOFdyX0JYLVJkV1lhTGswYk1iTXBjeVp0THNLT1ZVS3NubU1rbXlmbTFwNVNZcXI2Y3UzWWxlS3J5SWg1akg4cHRQWmxOaG9tc0RiZzVNZlMxb3dfSG5yNmN5Zl9iY0xBMzdzaElUTGdyZjI4X3piekJ4Q08teHBfNnN1amRuRXlsaU14U2RPUWhUaHljRE9SNkVjczZYRGMxV2VuQ1lFdw?oc=5" target="_blank">Fidelity National Financial Inc (FNF) (Q3 2026) Earnings Call Highlights: Title Margins Hold at ... By GuruFocus - Investing.com Canada</a>
+        <div class="news-meta">Sat, 07 Nov 2026 00:04:12 GMT</div>
+      </div>
+    
+      <div class="news-item">
         <a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE1FSGNXSmlfc1ZQSnNyS3piakY4cEpBTXRRSVU4X25KOVNGTEhndGg2QTVQZnBJZTEwZDR6c0FZUGpjUnVxdTBzcEE2bWNvazBJQm54ZVVJRlRnR2owZUV0SA?oc=5" target="_blank">Vanguard FTSE All-World ex-US Small-Cap Index Fund ETF Shares (VSS) Seasonal Returns Chart - Yahoo! Finance Canada</a>
         <div class="news-meta">Fri, 06 Nov 2026 21:35:07 GMT</div>
       </div>
@@ -869,18 +870,13 @@
       </div>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMivwFBVV95cUxQczgwMDk5djFVY0FEZzd6NzFvaF8yeTJpRk42T0hfdTQyVkg5QWVacUhRVFlWeTcyRGVDTVdlRDZSamJ3VmtwcVItaVlGTmdjZTZzeFZBS1o2VjFsNUQybDdidHM0OGk1cmlqbGRUbUFhTHp4eVY2M3VxdDFTU0VZNUdLd0hhZmRBZFhzdm9GcUFISHRneWxtckdaZzBKSHJwSHJzNGRTeHNqX0ZqOF9sbFZlVU4xdU5TRmp1TDZuMA?oc=5" target="_blank">Why Fidelity National Financial (FNF) stock is trading up today - TradingView</a>
-        <div class="news-meta">Fri, 06 Nov 2026 20:50:43 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxPMWthaXZFMnZGcmZqd0E4UnhZOVJFeHJ5N2Q5Q3BURmJEYTNNUm9UM1pWUEtEWkhLdnQ3REtNb25jOW96LURZS0xydlFvQWtRSXpXWEtLcEJlcm1GQU9Ybl9vVEQ5RlNMR0lkcC12SFBZRUdXUU9kVlF5U1g3VmxSdWdzOGdXQUFaeS12T1JleFNmVmdRejhGaWtjVHg?oc=5" target="_blank">What Blackrock Tcp Capital (TCPC) Said on Its Q3 Earnings Call - Yahoo Finance</a>
+        <div class="news-meta">Fri, 06 Nov 2026 21:14:39 GMT</div>
       </div>
     
       <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxNNG15S051TC1TUlFhN1V1Mk9JclNSYmtNNGlMS2pOZkZBcmVPTkZiejhfLWppejl0OUswUVJ2Q3NkUk1PZHM5V1NfNGpxT0Q1Q0prN3BZd20zM1RuTFhCMVlRdGxLNDh2UnBjOVFHZ2Q2dlNCY21UeHpCQTR5b3B2NHM4TDZReVRlYUY1SW0wdkpieFIzWU93UFRoMmphUzd4V3RrdkhNV0ZXcW9wU0lWb08tV25kRGpRSmZ0ZVQ5aUJBeGpqYk5F?oc=5" target="_blank">We Asked ChatGPT What $430M of Bitcoin ETF Outflows Means by Month End - 24/7 Wall St.</a>
-        <div class="news-meta">Fri, 06 Nov 2026 20:17:00 GMT</div>
-      </div>
-    
-      <div class="news-item">
-        <a href="https://news.google.com/rss/articles/CBMiywFBVV95cUxPQXVQRkJmXzluRmlJVkhyNWxYV0plSUN6TEllUm9RNFZGQ3k4SzNTVkxTdW1YYU5fVjNGTDZuT1VNWjQzRURNNk9GZ0FJWklVZDRGS3FsVzQtUG5hZlZEbkFCMnNhNVM5TF9lbzVDNUpsd3JmS0FxcjZ1TFdORzJfVF9jLVloRHdMbGdDZVJrM19LdGFSTU45Rm1CM1BJdDZnOWRWZEtJWmtzNHYweGxBa2FRT1dKUFc1T3NvS2llOXhJTHpKZl85RHAwWQ?oc=5" target="_blank">Fidelity (FNF) Q3 2026 Earnings Call Transcript - The Globe and Mail</a>
-        <div class="news-meta">Fri, 06 Nov 2026 19:49:53 GMT</div>
+        <a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxQSVVRem1DQy1MaWxxWDV6WVZ4M3NJUWFNaDNpQXNPVEZqcWd0MU5EZjl3UktWWjFCdGo0dmtkUlBzY0RiNTVEOVJNSkJCZHNFUlpuZjFPNkp5VElQajNFTUVYUWZWRGVLbExMMkt5a0U3alM3R1JFVDhwaDJoUlFOZjVGTHNMYkxVLWtFTXNPRDFHUUFzV1BzYmVYVGlIN0NjSTdfcmpraFpwTXBBam94VUQ1TkxwUHdFYlFrdA?oc=5" target="_blank">Why Fidelity National Financial (FNF) stock is trading up today - StockStory</a>
+        <div class="news-meta">Fri, 06 Nov 2026 20:55:18 GMT</div>
       </div>
     
   </div>
@@ -888,7 +884,7 @@
 </div>
 
 <footer>
-  글로벌 마켓 대시보드 · 데이터 페치: 2026-11-07 07:20:48 (KST)
+  글로벌 마켓 대시보드 · 데이터 페치: 2026-11-07 11:19:29 (KST)
   · Sources: Yahoo Finance (~15분 지연), Naver Finance, CNN, Google News RSS · Powered by Claude
   · 수동 갱신 모드 — 자동 새로고침 비활성
 </footer>
